@@ -43,6 +43,13 @@ module.exports = {
   },
 
   build: {
+
+    //高德
+    // 高德地图 key
+    MapKey: '6977068d900f34a68bba8da11160b724',
+    // 地图限定城市
+    MapCityName: '廊坊',
+
     // Template for index.html
     index: path.resolve(__dirname, '../dist/index.html'),
 

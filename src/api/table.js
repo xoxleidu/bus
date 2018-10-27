@@ -7,3 +7,12 @@ export function getList(params) {
     params
   })
 }
+
+export function postList(params) {
+  alert(52)
+  return request({
+    url: '/table/list',
+    method: 'post',
+    params
+  })
+}

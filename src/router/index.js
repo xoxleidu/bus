@@ -39,6 +39,19 @@ export const constantRouterMap = [
   },
 
   {
+    path: '/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'List',
+        component: () => import('@/views/list/index'),
+        meta: { title: 'List', icon: 'form' }
+      }
+    ]
+  },
+
+  {
     path: '/example',
     component: Layout,
     redirect: '/example/table',

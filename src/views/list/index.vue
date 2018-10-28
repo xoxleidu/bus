@@ -1,5 +1,22 @@
 <template>
   <div>
+    <el-row class="el-row-left">
+      <el-col :span="3">
+        <el-input placeholder="请输入内容" v-model="inputSearch" @keyup.enter.native="onSubmitSearch" class="input-with-select">
+          <el-select v-model="selectSearch" slot="prepend" placeholder="请选择">
+            <el-option label="餐厅名" value="1"></el-option>
+            <el-option label="订单号" value="2"></el-option>
+            <el-option label="用户电话" value="3"></el-option>
+          </el-select>
+        </el-input>
+      </el-col>
+      <el-col :span="1">
+        <el-button type="success" icon="el-icon-search" @click="onSubmitSearch"></el-button>
+      </el-col>
+      <el-col :span="2">
+        <el-button type="primary" @click="onSubmitAdd">Add</el-button>
+      </el-col>
+    </el-row>
     <el-table
       v-loading="listLoading"
       element-loading-text="Loading"
@@ -78,6 +95,9 @@
         name: "index",
         data() {
           return {
+            inputSearch: '',
+            selectSearch: 1,
+
             listLoading: true,
             tableData: [{
               id: '1',
@@ -97,6 +117,25 @@
           this.fetchData();
         },
         methods: {
+
+          onSubmitSearch() {
+            alert(this.selectSearch + ' onSubmitSearch ' + this.inputSearch)
+          },
+          onSubmitAdd() {
+            alert('onSubmitAdd!');
+            /*//添加数据
+            this.list.unshift(this.temp);
+
+            //删除数据
+            const index = this.list.indexOf(row); //找到要删除数据在list中的位置
+            this.list.splice(index, 1); //通过splice 删除数据
+
+            //修改数据
+            const index = this.list.indexOf(row); //找到修改的数据在list中的位置
+            this.list.splice(index, 1,this.updatedData); //通过splice 替换数据 触发视图更新*/
+          },
+
+
           handleEdit(index, row) {
             console.log(index, row);
           },
@@ -179,4 +218,17 @@
 
 <style scoped>
 
+
+
+  .el-row-left {
+    margin-left: 20px;
+    margin-top: 20px;
+    margin-right: 20px;
+  }
+  .el-select .el-input {
+    width: 130px;
+  }
+  .input-with-select .el-input-group__prepend {
+    background-color: #fff;
+  }
 </style>

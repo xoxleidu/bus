@@ -26,7 +26,25 @@
       border
       :default-sort = "{order: 'descending'}"
       @selection-change="handleSelectionChange"
+      @row-dblclick = "dbClickRow"
       style="width: 98%;margin: 20px;">
+
+      <el-table-column type="expand" label="展开" width="60">
+        <template slot-scope="props">
+          <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="商品名称">
+              <span>{{ props.row.name }}</span>
+            </el-form-item>
+            <el-form-item label="所属店铺">
+              <span>{{ props.row.shop }}</span>
+            </el-form-item>
+            <el-form-item label="商品 ID">
+              <span>{{ props.row.id }}</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
+
       <el-table-column
         prop="id"
         label="ID"
@@ -65,6 +83,7 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
+            type="primary"
             @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button
             size="mini"
@@ -136,10 +155,16 @@
           },
 
 
+          dbClickRow(val){
+            alert(val.id);
+            console.log(val);
+          },
           handleEdit(index, row) {
+            alert(row.id);
             console.log(index, row);
           },
           handleDelete(index, row) {
+            alert(row.id);
             console.log(index, row);
           },
           formatter(row, column) {

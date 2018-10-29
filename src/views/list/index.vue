@@ -121,7 +121,7 @@
 </template>
 
 <script>
-  import { getList } from '@/api/table'
+  import { getList,createArticle } from '@/api/table'
     export default {
         name: "index",
         data() {
@@ -156,6 +156,20 @@
               update: 'Edit',
               create: 'Create'
             },
+            /*contenttype: [{
+              'data': {
+                'test':'test'
+              },
+              'headers': {
+                'Content-Type': 'application/json'
+              }
+            }]*/
+            contenttype: {
+              'username': 'admin',
+              'password': 'admin'
+            },
+
+
           }
         },
         created: function(){
@@ -189,6 +203,7 @@
             this.$nextTick(() => {
               this.$refs['dataForm'].clearValidate()
             })
+
             /*//添加数据
             this.list.unshift(this.temp);
 
@@ -288,7 +303,10 @@
 
 
           createData() {
-            this.$refs['dataForm'].validate((valid) => {
+            createArticle(this.contenttype).then((res) => {
+              //alert(res);
+            })
+            /*this.$refs['dataForm'].validate((valid) => {
               if (valid) {
                 this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
                 this.temp.author = 'vue-element-admin'
@@ -303,7 +321,7 @@
                   })
                 })
               }
-            })
+            })*/
           },
           handleUpdate(row) {
             this.temp = Object.assign({}, row) // copy obj

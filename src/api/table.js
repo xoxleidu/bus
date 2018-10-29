@@ -19,9 +19,10 @@ export function postList(params) {
 
 export function createArticle(data) {
   return request({
-    url: '/article/create',
-    method: 'post',
-    data
+    baseURL: 'http://localhost:9528/',
+    url: '/login',
+    method: 'get',
+    data//
   })
 }
 

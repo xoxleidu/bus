@@ -103,6 +103,18 @@
       :total="total">
     </el-pagination>
 
+
+
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
+        231
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">Clean</el-button>
+        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">{{ dialogbutton }}</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 
 
@@ -128,6 +140,22 @@
             total: 5,
             currentPage: 1,
             pageSize: 2,
+
+            temp: {
+              id: undefined,
+              importance: 1,
+              remark: '',
+              timestamp: new Date(),
+              title: '',
+              type: '',
+              status: 'published'
+            },
+            dialogStatus: '',
+            dialogFormVisible: false,
+            textMap: {
+              update: 'Edit',
+              create: 'Create'
+            },
           }
         },
         created: function(){
@@ -140,8 +168,27 @@
           onSubmitSearch() {
             alert(this.selectSearch + ' onSubmitSearch ' + this.inputSearch)
           },
+
+          resetTemp() {
+            this.temp = {
+              id: undefined,
+              importance: 1,
+              remark: '',
+              timestamp: new Date(),
+              title: '',
+              status: 'published',
+              type: ''
+            }
+          },
           onSubmitAdd() {
-            alert('onSubmitAdd!');
+
+            this.resetTemp()
+            this.dialogStatus = 'create'
+            this.dialogbutton = 'create'
+            this.dialogFormVisible = true
+            this.$nextTick(() => {
+              this.$refs['dataForm'].clearValidate()
+            })
             /*//添加数据
             this.list.unshift(this.temp);
 
@@ -237,6 +284,71 @@
               alert("res.status:"+res.status)
             })*/
           },
+
+
+
+          createData() {
+            this.$refs['dataForm'].validate((valid) => {
+              if (valid) {
+                this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
+                this.temp.author = 'vue-element-admin'
+                createArticle(this.temp).then(() => {
+                  this.list.unshift(this.temp)
+                  this.dialogFormVisible = false
+                  this.$notify({
+                    title: '成功',
+                    message: '创建成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                })
+              }
+            })
+          },
+          handleUpdate(row) {
+            this.temp = Object.assign({}, row) // copy obj
+            this.temp.timestamp = new Date(this.temp.timestamp)
+            this.dialogStatus = 'update'
+            this.dialogFormVisible = true
+            this.$nextTick(() => {
+              this.$refs['dataForm'].clearValidate()
+            })
+          },
+          updateData() {
+            this.$refs['dataForm'].validate((valid) => {
+              if (valid) {
+                const tempData = Object.assign({}, this.temp)
+                tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+                updateArticle(tempData).then(() => {
+                  for (const v of this.list) {
+                    if (v.id === this.temp.id) {
+                      const index = this.list.indexOf(v)
+                      this.list.splice(index, 1, this.temp)
+                      break
+                    }
+                  }
+                  this.dialogFormVisible = false
+                  this.$notify({
+                    title: '成功',
+                    message: '更新成功',
+                    type: 'success',
+                    duration: 2000
+                  })
+                })
+              }
+            })
+          },
+          handleDelete(row) {
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+            const index = this.list.indexOf(row)
+            this.list.splice(index, 1)
+          },
+
         }
     }
 </script>

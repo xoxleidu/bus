@@ -58,7 +58,7 @@ export default {
         date2: '',
         delivery: false,
         type: [],
-        resource: '',
+        resource: 'Venue',
         desc: ''
       }
     }

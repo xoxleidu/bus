@@ -11,7 +11,7 @@ export function getList(params) {
 
 export function postList(currentPage,pageSize) {
   return request({
-    baseURL:'http://localhost:8080/buscenter',
+    //baseURL:'http://localhost:8080/buscenter',
     url: '/drivermange/findDriverInfoByPage',
     method: 'post',
     //data
@@ -24,16 +24,15 @@ export function postList(currentPage,pageSize) {
 
 export function createArticle(data) {
   return request({
-    baseURL: 'http://localhost:9528/',
-    url: '/login',
-    method: 'get',
+    url: '/drivermange/saveDriverInfo',
+    method: 'post',
     data//
   })
 }
 
 export function updateArticle(data) {
   return request({
-    url: '/article/update',
+    url: '/drivermange/updateDriverInfo',
     method: 'post',
     data
   })

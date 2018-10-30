@@ -11,13 +11,18 @@ const service = axios.create({
 
 // request拦截器
 service.interceptors.request.use(
-  config => {
-    console.log(config);
+
+  request => {
+    console.log(request);
+    return request
+  },
+  /*config => {
+    //console.log(config);
     if (store.getters.token) {
       config.headers['X-Token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     }
     return config
-  },
+  },*/
   error => {
     // Do something with request error
     console.log(error) // for debug
@@ -27,6 +32,7 @@ service.interceptors.request.use(
 
 // response 拦截器
 service.interceptors.response.use(
+
     //response => response,
     /**
      * 下面的注释为通过在response里，自定义code来标示请求状态
@@ -35,8 +41,10 @@ service.interceptors.response.use(
      * 以下代码均为样例，请结合自生需求加以修改，若不需要，则可删除
      */
     response => {
+      console.log(response);
       const res = response.data
-      if (res.code !== 20000) {
+      if (res.code !== "000") {
+        console.log(response);
         Message({
           message: res.message,
           type: 'error',

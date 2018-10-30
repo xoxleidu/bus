@@ -51,23 +51,28 @@
         sortable
         width="60">
       </el-table-column>
+      <!--<el-table-column-->
+        <!--prop="date"-->
+        <!--label="日期"-->
+        <!--sortable-->
+        <!--width="180">-->
+        <!--<template slot-scope="scope">-->
+          <!--<i class="el-icon-time"></i>-->
+          <!--<span style="margin-left: 10px">{{ scope.row.date }}</span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
       <el-table-column
-        prop="date"
-        label="日期"
-        sortable
-        width="180">
-        <template slot-scope="scope">
-          <i class="el-icon-time"></i>
-          <span style="margin-left: 10px">{{ scope.row.date }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="姓名"
-        width="180">
+        label="个人信息"
+        width="180"
+        align="center">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <p>姓名: {{ scope.row.name }}</p>
+            <p>{{ scope.row.photoPath }}</p>
+            <p>性别: {{ scope.row.sex == 0 ? "男":"女"}}</p>
+            <p>身份证: {{ scope.row.idcard }}</p>
             <p>住址: {{ scope.row.address }}</p>
+            <p>备注: {{ scope.row.remark }}</p>
             <div slot="reference" class="name-wrapper">
               <el-tag size="medium">{{ scope.row.name }}</el-tag>
             </div>
@@ -75,10 +80,48 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="地址"
-        :formatter="formatter">
+        sortable
+        prop="age"
+        label="年龄"
+        width="80">
       </el-table-column>
+      <el-table-column
+        sortable
+        prop="employeeId"
+        label="员工号"
+        width="90">
+      </el-table-column>
+      <el-table-column
+        prop="telephone"
+        label="电话"
+        width="120">
+      </el-table-column>
+      <el-table-column
+        label="所属公司"
+        width="100">
+        <template slot-scope="scope">
+          {{ scope.row.companyId == 0 ? "一公司" : scope.row.companyId == 1 ? "二公司" : scope.row.companyId == 2 ? "三公司" : "四公司"}}
+        </template>
+      </el-table-column>
+      <el-table-column
+        sortable
+        prop="inchargeLine"
+        label="所属路线"
+        width="110">
+      </el-table-column>
+      <el-table-column
+        sortable
+        prop="grade"
+        label="评级分数"
+        width="110">
+      </el-table-column>
+      <el-table-column
+        sortable
+        prop="complaintCount"
+        label="投诉次数"
+        width="110">
+      </el-table-column>
+
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
@@ -121,7 +164,7 @@
 </template>
 
 <script>
-  import { getList,createArticle } from '@/api/table'
+  import { getList,postList,createArticle } from '@/api/table'
     export default {
         name: "index",
         data() {
@@ -129,12 +172,38 @@
             inputSearch: '',
             selectSearch: 1,
 
+            /*{
+              "address": "河北省廊坊市广阳区万达广场",
+              "age": 28,
+              "companyId": 0,所属公司
+              "complaintCount": 2,受到投诉次数
+              "employeeId": 1001,员工号
+              "grade": 9,评级分数
+              "idcard": "131002199408204046",
+              "inchargeLine": 24,所属路线
+              "name": "张三",
+              "photoPath": "201-10-18-wsdassda.jpg",
+              "remark": "测试测试123",备注
+              "sex": 0,
+              "telephone": "13185471256"
+            }*/
+
             listLoading: true,
             tableData: [{
               id: '1',
-              date: '2016-05-02',
               name: '王小虎',
-              address: '上海市普陀区金沙江路 1518 弄'
+              sex: 0,
+              age: 28,
+              employeeId: '员工号',
+              telephone: '13185471256',
+              companyId: '所属公司',
+              inchargeLine: '所属路线',
+              grade: '评级分数',
+              complaintCount: '受到投诉次数',
+              idcard: '131002199408204046',
+              photoPath: '201-10-18-wsdassda.jpg',
+              remark: '测试测试',
+              address: '上海市普陀区金沙江路'
             }],
             multipleSelection: [],
             total: 5,
@@ -182,6 +251,8 @@
           onSubmitSearch() {
             alert(this.selectSearch + ' onSubmitSearch ' + this.inputSearch)
           },
+
+
 
           resetTemp() {
             this.temp = {
@@ -254,16 +325,17 @@
           },
           fetchData(curr,sizes,data){
 
-            alert(curr + '|' + sizes + '|' + data);
+            //alert(curr + '|' + sizes + '|' + data);
 
             this.listLoading = true
             //alert(this.currentPage);
-            getList(this.currentPage).then(response => {
+            postList(this.currentPage,this.pageSize).then(response => {
               //this.tableData = response.data.items
+              //alert(response.result.length);
               this.listLoading = false
-              this.total = response.data.items.length;
+              this.total = response.result.length;
               this.currentPage = 1;
-              this.tableData = response.data.items;
+              this.tableData = response.result;
             })
 
             /*this.axios.post('list.json',this.qs.stringify({'name':'xiaoming','sex':'nan'}),{

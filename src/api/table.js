@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import qs from 'qs' // 需要安装qs
 
 export function getList(params) {
   return request({
@@ -8,12 +9,16 @@ export function getList(params) {
   })
 }
 
-export function postList(params) {
-  alert(52)
+export function postList(currentPage,pageSize) {
   return request({
-    url: '/table/list',
+    baseURL:'http://localhost:8080/buscenter',
+    url: '/drivermange/findDriverInfoByPage',
     method: 'post',
-    params
+    //data
+    data:{
+      currentPage,
+      pageSize
+    },
   })
 }
 

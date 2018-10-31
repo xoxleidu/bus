@@ -9,16 +9,33 @@ export function getList(params) {
   })
 }
 
-export function postList(currentPage,pageSize) {
+export function postList(currentPage,pageSize,queryk,queryv) {
+  var data = '';
+  if(queryk == 0){
+
+    data = {
+      currentPage:currentPage,
+      pageSize:pageSize,
+      employeeId:queryv
+    }
+
+  } else if (queryk == 1) {
+    data = {
+      currentPage:currentPage,
+      pageSize:pageSize,
+      idcard:queryv
+    }
+  } else {
+    data = {
+      currentPage:currentPage,
+      pageSize:pageSize
+    }
+  }
+
   return request({
-    //baseURL:'http://localhost:8080/buscenter',
     url: '/drivermange/findDriverInfoByPage',
     method: 'post',
-    //data
-    data:{
-      currentPage,
-      pageSize
-    },
+    data
   })
 }
 
@@ -35,5 +52,15 @@ export function updateArticle(data) {
     url: '/drivermange/updateDriverInfo',
     method: 'post',
     data
+  })
+}
+
+export function deleteArticle(data) {
+  return request({
+    url: '/drivermange/forbideDriverInfos',
+    method: 'post',
+    data:{
+      id:data
+    }
   })
 }

@@ -33,6 +33,18 @@
         MapCityName: '',
       }
     },
+    async created () {
+      // 组件创建完后获取数据，
+      // 此时 data 已经被 observed 了
+      if (window.AMap && window.AMapUI) {
+        this.initMap()
+        // 未载入高德地图API，则先载入API再初始化
+      } else {
+        await remoteLoad(`http://webapi.amap.com/maps?v=1.4.10&key=${MapKey}`)
+        await remoteLoad('http://webapi.amap.com/ui/1.0/main.js')
+        this.initMap()
+      }
+    },
     methods: {
       // 搜索
       busLineSearch: function (event) {
@@ -128,7 +140,7 @@
         }
       }
     },
-    async created () {
+    /*async created () {
       // 已载入高德地图API，则直接初始化地图
       if (window.AMap && window.AMapUI) {
         this.initMap()
@@ -138,7 +150,7 @@
         await remoteLoad('http://webapi.amap.com/ui/1.0/main.js')
         this.initMap()
       }
-    }
+    }*/
   }
 </script>
 

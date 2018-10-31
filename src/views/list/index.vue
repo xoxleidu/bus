@@ -1,13 +1,12 @@
 <template>
   <div>
     <el-row class="el-row-left">
-      <el-col :span="3">
+      <el-col :span="6">
         <el-input placeholder="请输入内容" v-model="inputSearch" @keyup.enter.native="onSubmitSearch"
                   class="input-with-select">
-          <el-select v-model="selectSearch" slot="prepend" placeholder="请选择">
-            <el-option label="餐厅名" value="1"></el-option>
-            <el-option label="订单号" value="2"></el-option>
-            <el-option label="用户电话" value="3"></el-option>
+          <el-select v-model="selectSearch" slot="prepend" placeholder="请选择" style="width: 100px;">
+            <el-option label="工号" value="0"></el-option>
+            <el-option label="身份证" value="1"></el-option>
           </el-select>
         </el-input>
       </el-col>
@@ -16,6 +15,9 @@
       </el-col>
       <el-col :span="2">
         <el-button type="primary" @click="onSubmitAdd">Add</el-button>
+      </el-col>
+      <el-col :span="2">
+        <el-button type="primary" @click="onSubmitClear">刷新</el-button>
       </el-col>
     </el-row>
     <el-table
@@ -134,7 +136,7 @@
           <el-button
             size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)">删除
+            @click="handleDelete(scope.row)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -197,23 +199,23 @@
         <el-row :gutter="24">
           <el-col :span="2">员工号</el-col>
           <el-col :span="6">
-          <el-input v-model="temp.employeeId" :disabled="true" />
+            <el-input v-model="temp.employeeId" :disabled="true" />
           </el-col>
           <el-col :span="3">所属公司</el-col>
           <el-col :span="6">
-          <el-select v-model="temp.companyId" placeholder="please select your zone">
-            <el-option label="Zone one" value="0"/>
-            <el-option label="Zone two" value="1"/>
-            <el-option label="Zone three" value="2"/>
-            <el-option label="Zone fore" value="3"/>
-          </el-select>
+            <el-select v-model="temp.companyId" placeholder="please select your zone">
+              <el-option label="Zone one" value="0"/>
+              <el-option label="Zone two" value="1"/>
+              <el-option label="Zone three" value="2"/>
+              <el-option label="Zone fore" value="3"/>
+            </el-select>
           </el-col>
           <el-col :span="3">所属路线</el-col>
           <el-col :span="4">
-          <el-select v-model="temp.inchargeLine" placeholder="please select your zone">
-            <el-option label="Zone one" value="1"/>
-            <el-option label="Zone two" value="2"/>
-          </el-select>
+            <el-select v-model="temp.inchargeLine" placeholder="please select your zone">
+              <el-option label="Zone one" value="1"/>
+              <el-option label="Zone two" value="2"/>
+            </el-select>
           </el-col>
         </el-row>
         <el-row :gutter="24" class="form_data_label">评价信息</el-row>
@@ -230,7 +232,7 @@
         <el-row :gutter="24">
           <el-col :span="2">备注</el-col>
           <el-col :span="20">
-          <el-input v-model="temp.remark" type="textarea"/>
+            <el-input v-model="temp.remark" type="textarea"/>
           </el-col>
         </el-row>
 
@@ -249,14 +251,14 @@
 </template>
 
 <script>
-  import {getList, postList, createArticle, updateArticle} from '@/api/table'
+  import {getList, postList, createArticle, updateArticle,deleteArticle,searchArticle} from '@/api/table'
 
   export default {
     name: "index",
     data() {
       return {
-        inputSearch: '',
-        selectSearch: 1,
+        inputSearch: undefined,
+        selectSearch: undefined,
 
         /*{
           "address": "河北省廊坊市广阳区万达广场",
@@ -293,8 +295,8 @@
         }],
         multipleSelection: [],
         total: 5,
-        currentPage: 1,
-        pageSize: 2,
+        currentPage: undefined,
+        pageSize: 5,
 
         temp: {
           id: undefined,
@@ -318,18 +320,9 @@
           update: 'Edit',
           create: 'Create'
         },
-        /*contenttype: [{
-          'data': {
-            'test':'test'
-          },
-          'headers': {
-            'Content-Type': 'application/json'
-          }
-        }]*/
-        contenttype: {
-          'username': 'admin',
-          'password': 'admin'
-        },
+        querykey:'employeeId',
+
+
 
 
       }
@@ -340,11 +333,6 @@
       this.fetchData();
     },
     methods: {
-
-      onSubmitSearch() {
-        alert(this.selectSearch + ' onSubmitSearch ' + this.inputSearch)
-      },
-
 
       resetTemp() {
         this.temp = {
@@ -361,7 +349,9 @@
           idcard: '',
           photoPath: '',
           remark: '',
-          address: '廊坊市'
+          address: '廊坊市',
+          healthPath:'',
+          licensePath:'',
         }
       },
       onSubmitAdd() {
@@ -396,39 +386,82 @@
 
 
       handleSizeChange(val) {
+
         this.pageSize = val;
         this.currentPage = 1;
-        this.fetchData(1, val);
+        this.fetchData();
         // console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-        //this.currentPage = val;
-        this.fetchData(val, this.pageSize);
+        //console.log(`当前页: ${val}`);
+
+        this.currentPage = val;
+        this.fetchData();
       },
       handleSelectionChange(val) {
+        alert(123)
         //this.multipleSelection = val;
-        this.currentPage = val;
-        this.fetchData(val, this.pageSize);
+        //this.currentPage = val;
+        this.fetchData();
         // console.log(`当前页: ${val}`);
       },
       callbackFunction(result) {
         alert(result + "aaa");
       },
-      fetchData(curr, sizes, data) {
 
-        //alert(curr + '|' + sizes + '|' + data);
+      onSubmitSearch() {
+        if(this.selectSearch == undefined) {
+          this.$notify({
+            title: '警告',
+            message: '请选择查询条件',
+            type: 'warning',
+            duration: 2000
+          })
+        }else if(this.inputSearch == undefined){
+          this.$notify({
+            title: '警告',
+            message: '请填写查询内容',
+            type: 'warning',
+            duration: 2000
+          })
+        }else {
+          this.fetchData()
+        }
 
+      },
+
+      onSubmitClear(){
+        this.currentPage = undefined
+        this.selectSearch = undefined
+        this.inputSearch = undefined
+        this.fetchData()
+      },
+
+      fetchData() {
         this.listLoading = true
+
+        /*if(data == null && data == undefined && data == ''){
+          alert('搜索')
+          searchArticle(this.currentPage, this.pageSize, this.inputSearch).then(response => {
+            //this.tableData = response.data.items
+            //alert(response.result.length);
+            this.listLoading = false
+            this.total = response.result.length;
+            this.currentPage = 1;
+            this.tableData = response.result;
+          })
+        } else {*/
         //alert(this.currentPage);
-        postList(this.currentPage, this.pageSize).then(response => {
+        postList(this.currentPage, this.pageSize,this.selectSearch,this.inputSearch).then(response => {
           //this.tableData = response.data.items
           //alert(response.result.length);
           this.listLoading = false
-          this.total = response.result.length;
-          this.currentPage = 1;
-          this.tableData = response.result;
+          this.total = response.result.total;
+          this.currentPage = response.result.current;
+          this.tableData = response.result.records;
         })
+        //}
+        //alert(curr + '|' + sizes + '|' + data);
 
         /*this.axios.post('list.json',this.qs.stringify({'name':'xiaoming','sex':'nan'}),{
           headers: {
@@ -517,16 +550,23 @@
         })
       },
       updateData() {
-        console.log(this.temp)
+
+        console.log()
         updateArticle(this.temp).then((res) => {
           console.log(res)
           if (res.code == "000") {
-            //this.temp.id = '请返回ID'
-            this.tableData.unshift(this.temp)
+            for (const v of this.tableData) {
+              if (v.id === this.temp.id) {
+                const index = this.tableData.indexOf(v)
+                this.tableData.splice(index, 1, this.temp)
+                break
+              }
+            }
+            //this.tableData.splice(index, 1,this.temp)
             this.dialogFormVisible = false
             this.$notify({
               title: '成功',
-              message: '创建成功',
+              message: '编辑成功',
               type: 'success',
               duration: 2000
             })
@@ -564,12 +604,28 @@
         })*/
       },
       handleDelete(row) {
-        this.$notify({
-          title: '成功',
-          message: '删除成功',
-          type: 'success',
-          duration: 2000
+
+        deleteArticle(row.id).then((res) => {
+          console.log(res)
+          if (res.code == "000") {
+            const index = this.tableData.indexOf(row)
+            this.tableData.splice(index, 1)
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+          }else {
+            this.$notify({
+              title: '失败',
+              message: '创建失败',
+              type: 'error',
+              duration: 4000
+            })
+          }
         })
+
         const index = this.list.indexOf(row)
         this.list.splice(index, 1)
       },
@@ -609,5 +665,8 @@
 
   .input-with-select .el-input-group__prepend {
     background-color: #fff;
+  }
+  .input-with-select select {
+    width: 120px;
   }
 </style>

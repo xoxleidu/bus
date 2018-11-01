@@ -32,7 +32,7 @@
       @row-dblclick="dbClickRow"
       style="width: 98%;margin: 20px;">
 
-      <el-table-column type="expand" label="展开" width="60">
+      <!--<el-table-column type="expand" label="展开" width="60">
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item label="商品名称">
@@ -46,7 +46,7 @@
             </el-form-item>
           </el-form>
         </template>
-      </el-table-column>
+      </el-table-column>-->
 
       <el-table-column
         prop="id"
@@ -71,13 +71,20 @@
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <p>姓名: {{ scope.row.name }}</p>
-            <p>{{ scope.row.photoPath }}</p>
             <p>性别: {{ scope.row.sex == 0 ? "男":"女"}}</p>
             <p>身份证: {{ scope.row.idcard }}</p>
             <p>住址: {{ scope.row.address }}</p>
             <p>备注: {{ scope.row.remark }}</p>
             <div slot="reference" class="name-wrapper">
-              <el-tag size="medium">{{ scope.row.name }}</el-tag>
+              <div v-if="scope.row.photoPath" class="avatartablerowfacediv">
+                <img :src="scope.row.photoPath">
+              </div>
+              <div v-else class="avatartablerowfacediv">
+                <img src="/static/imageDef.jpg">
+              </div>
+              <div class="avatartablerownamediv">
+                <el-tag size="medium">{{ scope.row.name }}</el-tag>
+              </div>
             </div>
           </el-popover>
         </template>
@@ -125,6 +132,32 @@
         label="投诉次数"
         width="110">
       </el-table-column>
+      <el-table-column
+        align="center"
+        label="驾照"
+        width="110">
+        <template slot-scope="scope">
+          <div v-if="scope.row.licensePath" class="avatartablerowcarddiv">
+            <img :src="scope.row.licensePath">
+          </div>
+          <div v-else class="avatartablerowcarddiv">
+            <img src="/static/imageDef.jpg">
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="体检表"
+        width="110">
+        <template slot-scope="scope">
+          <div v-if="scope.row.healthPath" class="avatartablerowmedicadiv">
+            <img :src="scope.row.healthPath">
+          </div>
+          <div v-else class="avatartablerowmedicadiv">
+            <img src="/static/imageDef.jpg">
+          </div>
+        </template>
+      </el-table-column>
 
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -151,6 +184,19 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="total">
     </el-pagination>
+
+    <el-dialog :visible.sync="dialogImgVisible">
+        <el-form ref="imgForm" :rules="rules" :model="temp"
+                 label-position="left" label-width="70px"
+                 style="width: 700px; margin:auto; text-align: center;">
+          <el-row class="dialogtempimgcard">
+            <img :src="temp.licensePath"/>
+          </el-row>
+          <el-row class="dialogtempimgmedica">
+            <img :src="temp.healthPath"/>
+          </el-row>
+        </el-form>
+    </el-dialog>
 
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -190,9 +236,44 @@
           </el-col>
         </el-row>
         <el-row :gutter="24">
-          <el-col :span="2">图片</el-col>
+          <el-col :span="2">头像</el-col>
           <el-col :span="6">
-            <img src="../../assets/user.png" class="img_border_radius" v-model="temp.photoPath" />
+            <!--<img src="../../assets/user.png" class="img_border_radius" v-model="temp.photoPath" />-->
+
+            <el-upload
+              class="avatar-uploader"
+              action="http://localhost:8080/buscenter/uploaddriverimages/"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload">
+              <img v-if="imageFaceUrl" :src="imageFaceUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+
+          </el-col>
+          <el-col :span="2">驾照</el-col>
+          <el-col :span="6">
+            <el-upload
+              class="avatar-uploader"
+              action="http://localhost:8080/buscenter/uploaddriverimages/"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess1"
+              :before-upload="beforeAvatarUpload">
+              <img v-if="imageCardUrl" :src="imageCardUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-col>
+          <el-col :span="2">体检表</el-col>
+          <el-col :span="6">
+            <el-upload
+              class="avatar-uploader"
+              action="http://localhost:8080/buscenter/uploaddriverimages/"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess2"
+              :before-upload="beforeAvatarUpload">
+              <img v-if="imageMedicalUrl" :src="imageMedicalUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
           </el-col>
         </el-row>
         <el-row :gutter="24" class="form_data_label">工作信息</el-row>
@@ -289,7 +370,9 @@
           grade: '评级分数',
           complaintCount: '受到投诉次数',
           idcard: '131002199408204046',
-          photoPath: '201-10-18-wsdassda.jpg',
+          photoPath: '/static/imageDef.jpg',
+          licensePath: '/static/imageDef.jpg',
+          healthPath: '/static/imageDef.jpg',
           remark: '测试测试',
           address: '上海市普陀区金沙江路'
         }],
@@ -311,17 +394,23 @@
           complaintCount: 0,
           idcard: '',
           photoPath: '',
+          licensePath: '',
+          healthPath: '',
           remark: '',
           address: '廊坊市'
         },
         dialogStatus: '',
         dialogFormVisible: false,
+        dialogImgVisible: false,
         textMap: {
           update: 'Edit',
           create: 'Create'
         },
         querykey:'employeeId',
-
+        imageFaceUrl: '',
+        imageCardUrl: '',
+        imageMedicalUrl: '',
+        imageDef:'/static/imageDef.jpg'
 
 
 
@@ -357,6 +446,9 @@
       onSubmitAdd() {
 
         this.resetTemp()
+        this.imageFaceUrl = ''
+        this.imageCardUrl = ''
+        this.imageMedicalUrl = ''
         this.dialogStatus = 'create'
         this.dialogbutton = 'create'
         this.dialogFormVisible = true
@@ -378,8 +470,26 @@
 
 
       dbClickRow(val) {
-        alert(val.id);
-        console.log(val);
+
+        if(val.licensePath == '' || val.healthPath == '') {
+          this.$notify({
+            title: '警告',
+            message: '没有上传资料',
+            type: 'warning',
+            duration: 2000
+          })
+        } else {
+          this.temp.licensePath = val.licensePath;
+          this.temp.healthPath = val.healthPath;
+          this.dialogImgVisible = true
+          this.$nextTick(() => {
+            this.$refs['imgForm'].clearValidate()
+          })
+        }
+
+
+        //alert(val.licensePath);
+        //console.log(val);
       },
 
 
@@ -434,6 +544,9 @@
         this.currentPage = undefined
         this.selectSearch = undefined
         this.inputSearch = undefined
+        this.imageFaceUrl = ''
+        this.imageCardUrl = ''
+        this.imageMedicalUrl = ''
         this.fetchData()
       },
 
@@ -500,11 +613,11 @@
 
       createData() {
 
-
+          console.log(this.temp);
         createArticle(this.temp).then((res) => {
           console.log(res)
           if (res.code == "000") {
-            this.temp.id = '请返回ID'
+            this.temp.id = res.result
             this.tableData.unshift(this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -540,8 +653,12 @@
         })*/
       },
       handleUpdate(row) {
+        alert(JSON.stringify(row))
         this.temp = Object.assign({}, row) // copy obj
-        this.temp.timestamp = new Date(this.temp.timestamp)
+        //this.temp.timestamp = new Date(this.temp.timestamp)
+        this.imageFaceUrl = row.photoPath;
+        this.imageCardUrl = row.licensePath;
+        this.imageMedicalUrl = row.healthPath;
         this.dialogbutton = 'update'
         this.dialogStatus = 'update'
         this.dialogFormVisible = true
@@ -630,6 +747,44 @@
         this.list.splice(index, 1)
       },
 
+      /*photoPath: this.imageFaceUrl,
+      licensePath: this.imageCardUrl,
+      healthPath: this.imageMedicalUrl,*/
+
+      handleAvatarSuccess(res, file) {
+
+        console.log(res)
+        //this.imageUrl = URL.createObjectURL(file.raw);
+        this.imageFaceUrl = res.result.url;
+        this.temp.photoPath = res.result.url;
+      },
+      handleAvatarSuccess1(res, file) {
+
+        console.log(res)
+        //this.imageUrl = URL.createObjectURL(file.raw);
+        this.imageCardUrl = res.result.url;
+        this.temp.licensePath = res.result.url
+      },
+      handleAvatarSuccess2(res, file) {
+
+        console.log(res)
+        //this.imageUrl = URL.createObjectURL(file.raw);
+        this.imageMedicalUrl = res.result.url;
+        this.temp.healthPath = res.result.url
+      },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      },
+
     }
   }
 </script>
@@ -669,4 +824,70 @@
   .input-with-select select {
     width: 120px;
   }
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+  .avatartablerow {
+    width: 60px;
+    height: 40px;
+    display: block;
+  }
+  .avatartablerowfacediv img{
+    width: 26px;
+    height: 26px;
+    -webkit-border-radius: 13px;
+    border-radius: 13px;
+  }
+  .avatartablerowfacediv{
+    float: left;
+  }
+  .avatartablerowcarddiv img{
+    width: 60px;
+    height: 40px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+  }
+  .avatartablerowmedicadiv img{
+    width: 40px;
+    height: 60px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+  }
+  .dialogtempimgcard img {
+    width: 400px;
+    height: 250px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+  }
+  .dialogtempimgmedica img {
+    width: 600px;
+    height: 800px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+  }
+  /*.zjhn-nav li.active a{
+    background-image:url(../image/Click_03_temp.png);
+    background-repeat:no-repeat;
+    background-size:100% 100%;
+    -moz-background-size:100% 100%;}*/
 </style>

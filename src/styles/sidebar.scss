@@ -4,7 +4,7 @@
     min-height: 100%;
     transition: margin-left .28s;
     /*margin-left: 180px;*/
-    margin-top: 120px;
+    margin-top: 60px;
     position: relative;
   }
   // 侧边栏
@@ -13,7 +13,7 @@
     /*width: 180px !important;
     height: 100%;*/
     width: 100% !important;
-    height: 120px;
+    height: 60px;
     position: fixed;
     font-size: 0px;
     top: 0;
@@ -60,11 +60,12 @@
   }
   .hideSidebar {
     .sidebar-container {
-      width: 36px !important;
+      /*width: 36px !important;*/
+      width: 100% !important;
     }
-    .main-container {
+    /*.main-container {
       margin-left: 36px;
-    }
+    }*/
     .submenu-title-noDropdown {
       padding-left: 10px !important;
       position: relative;

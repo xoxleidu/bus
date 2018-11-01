@@ -1,8 +1,13 @@
 <template>
   <div class="hello">
-    <img src="../../assets/logo.png"/>
-    <h1>{{ msg }}</h1>
+    <div class="hello1">
+      <img src="../../assets/logo.png"/>
+    </div>
+    <div class="hello2">
+      <h1>{{ msg }}</h1>
+    </div>
   </div>
+
 </template>
 
 <script>
@@ -10,7 +15,7 @@
     name: 'HelloWorld',
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        msg: 'Welcome to Your busCenter App'
       }
     }
   }
@@ -33,9 +38,17 @@
     color: #42b983;
   }
   .hello {
-    width: 100%;
+    width: 600px;
     height: 100%;
-    padding: auto;
     margin: auto;
+    padding-top: 100px;
+  }
+  .hello1 {
+    width: 200px;
+    height: 100%;
+    margin: auto;
+  }
+  .hello2 {
+    text-align: center;
   }
 </style>

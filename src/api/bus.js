@@ -10,6 +10,9 @@ export function getList(params) {
 }
 
 export function postList(currentPage,pageSize,queryk,queryv) {
+/*  if(currentPage == null) {
+    currentPage = 1
+  }*/
   var data = '';
   if(queryk == 0){
 
@@ -57,7 +60,7 @@ export function updateArticle(data) {
 
 export function deleteArticle(data) {
   return request({
-    url: '/buscontroller/deletebuslist',
+    url: '/buscontroller/deletebusbyid',
     method: 'post',
     data:{
       id:data

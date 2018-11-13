@@ -74,6 +74,54 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/jiankong',
+    component: Layout,
+    children: [
+      {
+        path: 'jiankong',
+        name: '车辆监控',
+        component: () => import('@/views/jiankong/index'),
+        meta: { title: '车辆监控', icon: 'map' }
+      }
+    ]
+  },
+  {
+    path: '/jiankongline',
+    component: Layout,
+    children: [
+      {
+        path: 'jiankongline',
+        name: '线路监控',
+        component: () => import('@/views/jiankongline/index'),
+        meta: { title: '线路监控', icon: 'map' }
+      }
+    ]
+  },
+  {
+    path: '/xianlu',
+    component: Layout,
+    children: [
+      {
+        path: 'xianlu',
+        name: '线路演示',
+        component: () => import('@/views/xianlu/index'),
+        meta: { title: '线路演示', icon: 'map' }
+      }
+    ]
+  },
+  {
+    path: '/guiji',
+    component: Layout,
+    children: [
+      {
+        path: 'guiji',
+        name: '轨迹回放',
+        component: () => import('@/views/guiji/index'),
+        meta: { title: '轨迹回放', icon: 'map' }
+      }
+    ]
+  },
+  {
     path: 'external-link',
     component: Layout,
     children: [

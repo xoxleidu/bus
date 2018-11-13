@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "axios": "0.18.0",
+    "jquery": "^3.2.1",
     "element-ui": "2.4.6",
     "js-cookie": "2.2.0",
     "normalize.css": "7.0.0",
@@ -39,6 +40,8 @@
     "copy-webpack-plugin": "4.5.2",
     "css-loader": "1.0.0",
     "eslint": "4.19.1",
+    "less": "^2.7.2",
+    "less-loader": "^4.0.5",
     "eslint-friendly-formatter": "4.0.1",
     "eslint-loader": "2.0.0",
     "eslint-plugin-vue": "4.7.1",

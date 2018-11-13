@@ -5,18 +5,44 @@
     </div>
     <div class="hello2">
       <h1>{{ msg }}</h1>
+      <el-button  type="primary" @click.native.prevent="test">
+        Sign in
+      </el-button>
     </div>
   </div>
 
 </template>
 
 <script>
+  import {GPS} from '@/utils/guijibug'
+
   export default {
     name: 'HelloWorld',
     data () {
+
       return {
         msg: 'Welcome to Your busCenter App'
       }
+    },
+    methods: {
+
+      test(){
+        //116.696693	39.548732
+        //116.698787	39.54751
+
+
+
+
+        var xx = 116.698787;
+        var yy = 39.54751;
+        //alert(1)lat: 39.52245719771927, lon: 116.65314540084421
+
+        console.log(GPS.gcj_encrypt(yy,xx));
+      }
+
+
+
+
     }
   }
 </script>

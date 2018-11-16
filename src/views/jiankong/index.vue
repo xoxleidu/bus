@@ -117,7 +117,7 @@
 
 
 
-      <div id="JK-map" style="height:100%;" :style="{height:'100%',visibility:$route.name=='jiankong'?'visible':'hidden'}"></div>
+      <div id="JK-map" style="height:100%;" :style="{height:'90%',visibility:$route.name=='jiankong'?'visible':'hidden'}"></div>
 
 
       <transition-group tag="div" name="JK-video" :class="$route.name=='shipin'?'shipin-video':'JK-video'">
@@ -203,12 +203,12 @@
 </template>
 <script>
 
-  //import Vue from 'vue';
+  import Vue from 'vue';
   import {god} from "../../API/jiankong-line.js"
   import { Loading } from 'element-ui';
   import { Message } from 'element-ui';
   import $ from 'jQuery';
-  //import { Notification } from 'element-ui';
+  import { Notification } from 'element-ui';
   export default {
     data() {
       return {
@@ -385,6 +385,7 @@
       //let loadingInstance = Loading.service({ fullscreen: true,text:"载入11数据"});
 
       //加载基础信息｛线路基础信息、车辆基础信息｝
+      //var loadLines = '';
       var loadLines =$.ajax({
         url: window.GJCONFIG.localhost+"/Service1.svc/GetData",
         data: { 'value': 1 },
@@ -392,12 +393,56 @@
         dataType: "jsonp",
         jsonp: "callback",
         success:function(data){
-          god.init(JSON.parse(data),true);
+          var rdata = [{
+            'List1': [{
+              'LineId': 11,
+              'LineName': '1路',
+              'LineVersion': '1708311606',
+              'Time': ['05:00', '23:00', '05:00', '23:00', ],
+              'SiteList': [{
+                'SiteName': '武警学院',
+                'Lon': 39.123456,
+                'Lat': 116.123456,
+              }, {
+                'SiteName': '武警学院',
+                'Lon': 39.123456,
+                'Lat': 116.123456,
+              }],
+              'SiteList2': [
+                [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 0],
+                []
+              ]
+            }, {
+              'LineId': 12,
+              'LineName': '1路',
+              'LineVersion': '1708311606',
+              'Time': ['05:00', '23:00', '05:00', '23:00', ],
+              'SiteList': [{
+                'SiteName': '武警学院',
+                'Lon': 39.123456,
+                'Lat': 116.123456,
+              }, {
+                'SiteName': '武警学院',
+                'Lon': 39.123456,
+                'Lat': 116.123456,
+              }],
+              'SiteList2': [
+                [],
+                [30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 30]
+              ]
+            }],
+            'List2': {
+              '11': 0,
+              '12': 1,
+            }
+          }];
+          god.init(JSON.parse(rdata),true);
           window.god = god;
           loadingInstance.setText("载入线路数据");
         }
       });
 
+      //var loadCars = '';
       var loadCars = $.ajax({
         url: window.GJCONFIG.localhost+"/PositionService.svc/GetLoadData",
         type: 'GET',
@@ -482,7 +527,7 @@
       if(!window.BMap){
         var script = document.createElement("script");
         script.type = "text/javascript";
-        script.src = "http://api.map.baidu.com/api?v=2.0&ak=GQwMBW7GulaMd4k3nHoL5M7xZNqF8Y3B&callback=mapInit";
+        script.src = "http://api.map.baidu.com/api?v=2.0&ak=C7kiRgh3qZDHrCbpf9vVGjrN3O9Rf10Q&callback=mapInit";
         document.body.appendChild(script);
       }else{
         mapInit()

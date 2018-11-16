@@ -59,7 +59,7 @@ Station.prototype.checkShuangche = function(){
 //   this.bus = this.bus.filter((bus)=>{
 //     if(bus.CarSign ==outBus.CarSign){
 //       return false;
-//     }                
+//     }
 //   })
 // }
 
@@ -99,11 +99,11 @@ Line.prototype.init = function(){
   }
   if(down.length){
     var dFirst = down[0]==0?0:down[0]; //下行第一个站点
-    var dEnd = down[down.length-1]==0?0:down[down.length-1]; //下行最后一个站点 
+    var dEnd = down[down.length-1]==0?0:down[down.length-1]; //下行最后一个站点
     if(uFirst == dEnd){//处理环线的倒数第二个站点
-      var dEnd1 = down[down.length-3]==0?0:down[down.length-3]; //倒数第二个站点不检测双车 
+      var dEnd1 = down[down.length-3]==0?0:down[down.length-3]; //倒数第二个站点不检测双车
     }else{
-      var dEnd1 = down[down.length-2]==0?0:down[down.length-2]; //倒数第二个站点不检测双车 
+      var dEnd1 = down[down.length-2]==0?0:down[down.length-2]; //倒数第二个站点不检测双车
     }
     this.stations[dFirst].isFirst = true;
     this.stations[dEnd].isFirst = true;
@@ -121,7 +121,7 @@ Line.prototype.warning = function(type,station,bus){
     god.warning(type,this.data.LineName,this,station);
   }else{
     //如果滞站，传入type(报警类型) LineName（线路名） Line（滞站线路） Station（滞站站点） Bus（滞站车辆）
-    god.warning(type,this.LineName,this,station,bus); 
+    god.warning(type,this.LineName,this,station,bus);
   }
 }
 Line.prototype.in = function(bus){
@@ -141,12 +141,12 @@ Line.prototype.in = function(bus){
     var  busList = this.stations[currentPosition].bus;//进站车辆
     var  nextBusList = this.stations[currentPosition].nextBus; //出站车辆
     busList.map((item,index)=>{
-      if(item.CarSign == bus.CarSign){ 
+      if(item.CarSign == bus.CarSign){
         busList.splice(index,1);//在之前的站点中删除该车
       }
     });
     nextBusList.map((item,index)=>{
-      if(item.CarSign == bus.CarSign){ 
+      if(item.CarSign == bus.CarSign){
         nextBusList.splice(index,1);//在之前的站点中删除该车
       }
     });
@@ -201,8 +201,8 @@ Line.prototype.checkOffline = function(){
           station.bus.map((bus,index)=>{
             if(currentTime - bus.updateTimer > 180000){//3分钟没有收到定位数据、删除车辆
               station.bus.splice(index,1);
-              delete this.busMap[key];  
-            }          
+              delete this.busMap[key];
+            }
           });
         }
       }
@@ -228,7 +228,7 @@ Line.prototype.checkDajianju = function(callback){
       });
   });
   if(result){
-    this.warning("dajianju");  
+    this.warning("dajianju");
     if(typeof callback === "function"){
       callback(this.data.LineName);
     }
@@ -237,7 +237,7 @@ Line.prototype.checkDajianju = function(callback){
 }
 
 
-function formatTime(timeStr){ 
+function formatTime(timeStr){
   //"20180205135130" to "2018-02-05 13:51:30"
   if(timeStr.length === 14){
     return timeStr.slice(0,4)+"-"+timeStr.slice(4,6)+"-"+timeStr.slice(6,8)+" "+timeStr.slice(8,10)+":"+timeStr.slice(10,12)+":"+timeStr.slice(12,14);
@@ -249,7 +249,7 @@ function formatTime(timeStr){
 
 /***初始化***/
 god.lines = {};
-//import {lineData} from "@/API/"
+import {lineData} from "@/API/"
 god.init = function(lineData,isWatch){
   //isWatch 是否监控
 lineData.List2 = JSON.parse(lineData.List2);
@@ -259,15 +259,15 @@ lineData.List2 = JSON.parse(lineData.List2);
     }
   });
 
-  setInterval(()=>{    
+  setInterval(()=>{
     for(var lineId in god.lines){
       var line = god.lines[lineId];
       if(GJCONFIG.setting.StagnantStop != "0" && isWatch){//滞站检测
-        line.checkZhizhan();  
+        line.checkZhizhan();
       }
       line.checkOffline();
     }
-      
+
   },2000);
 
 

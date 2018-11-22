@@ -7,7 +7,7 @@
       <div class="avatar-wrapper">
         <!--<img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">-->
         <img src="/static/systemIcon.png" class="user-avatar">
-        <i class="el-icon-caret-bottom"/>
+        <!--<i class="el-icon-caret-bottom"/>-->
       </div>
       <el-dropdown-menu slot="dropdown" class="user-dropdown">
         <router-link class="inlineBlock" to="/">
@@ -79,8 +79,8 @@ export default {
       margin-top: 5px;
       position: relative;
       .user-avatar {
-        width: 40px;
-        height: 40px;
+        width: 20px;
+        height: 20px;
         border-radius: 10px;
       }
       .el-icon-caret-bottom {

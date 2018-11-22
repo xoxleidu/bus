@@ -64,3 +64,32 @@ export function deleteArticle(data) {
     }
   })
 }
+
+export function getBusLineList() {
+  return request({
+    url: '/line/findAllLineInfo',
+    method: 'post'
+
+  })
+}
+
+export function getBusList(data) {
+  return request({
+    url: '/busInfo/findOnlineBusListInLine',
+    method: 'post',
+    data:{
+      runMethod:data
+    }
+  })
+}
+
+export function getBusGPS(data) {
+  return request({
+    url: '/line/findLinedetailInfo',
+    method: 'post',
+    data:{
+      runMethod:data
+    }
+  })
+}
+

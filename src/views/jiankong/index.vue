@@ -387,56 +387,17 @@
       //加载基础信息｛线路基础信息、车辆基础信息｝
       //var loadLines = '';
       var loadLines =$.ajax({
-        url: window.GJCONFIG.localhost+"/Service1.svc/GetData",
-        data: { 'value': 1 },
-        type: 'GET',
-        dataType: "jsonp",
-        jsonp: "callback",
+        //url: window.GJCONFIG.localhost+"/line/findAllLineInfo",
+        url: "http://localhost:8080/buscenter/line/findAllLineInfo",
+        //data: { 'value': 1 },
+        type: 'POST',
+        //dataType: "json",
+        //jsonp: "callback",
         success:function(data){
-          var rdata = [{
-            'List1': [{
-              'LineId': 11,
-              'LineName': '1路',
-              'LineVersion': '1708311606',
-              'Time': ['05:00', '23:00', '05:00', '23:00', ],
-              'SiteList': [{
-                'SiteName': '武警学院',
-                'Lon': 39.123456,
-                'Lat': 116.123456,
-              }, {
-                'SiteName': '武警学院',
-                'Lon': 39.123456,
-                'Lat': 116.123456,
-              }],
-              'SiteList2': [
-                [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 0],
-                []
-              ]
-            }, {
-              'LineId': 12,
-              'LineName': '1路',
-              'LineVersion': '1708311606',
-              'Time': ['05:00', '23:00', '05:00', '23:00', ],
-              'SiteList': [{
-                'SiteName': '武警学院',
-                'Lon': 39.123456,
-                'Lat': 116.123456,
-              }, {
-                'SiteName': '武警学院',
-                'Lon': 39.123456,
-                'Lat': 116.123456,
-              }],
-              'SiteList2': [
-                [],
-                [30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 30]
-              ]
-            }],
-            'List2': {
-              '11': 0,
-              '12': 1,
-            }
-          }];
-          god.init(JSON.parse(rdata),true);
+          console.log(data);
+
+          //god.init(JSON.parse(data),true);
+          god.init(JSON.parse(data),true);
           window.god = god;
           loadingInstance.setText("载入线路数据");
         }
@@ -674,6 +635,9 @@
 
 
       },
+
+
+
       formatData(str){//格式化socket数据
         var result = {};
         var _arr = str.replace("^G||","").replace("$","").split("|");
@@ -711,6 +675,9 @@
         }
         return result
       },
+
+
+
       getStation(carMarkerWindow){//获取当前公交站
         var name = "";
         var _index = 0;
@@ -785,6 +752,9 @@
 
 
       },
+
+
+
       removeVideo(data,$el){
         //删除指定得视频
 

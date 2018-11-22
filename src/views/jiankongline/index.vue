@@ -11,14 +11,16 @@
 <script>
   import warning from '../../components/layout/warning.vue'
   import {lineData} from "@/API/"
-  import {god} from "../../API/jiankong-line.js"
+  //import {god} from "../../API/jiankong-line.js"
+  import { getBusLineList} from '@/api/table'
   import $ from 'jQuery';
   export default {
     components:{warning:warning},
     watch:{
       "$route":function(){
         try{
-          var lineId = this.$route.path.replace("/jiankong-line/","");
+          //var lineId = this.$route.path.replace("/jiankongline/index","");
+          var lineId = '11';
           this.routeView(lineId);
         }catch(err){
 
@@ -33,6 +35,7 @@
           LineName:"",
           round:false
         },
+        god:{},
         warningData:{},
         lineData:Object.freeze(lineData),
         lineList:[]
@@ -83,18 +86,29 @@
       if(window.god){
         that.initGod();
       }else{
-        $.ajax({
-          url: window.GJCONFIG.localhost+"/Service1.svc/GetData",
-          data: { 'value': 1 },
-          type: 'GET',
-          dataType: "jsonp",
-          jsonp: "callback",
-          success:function(data){
-            god.init(JSON.parse(data));
+        // $.ajax({
+        //   url: window.GJCONFIG.localhost+"/Service1.svc/GetData",
+        //   data: { 'value': 1 },
+        //   type: 'GET',
+        //   dataType: "jsonp",
+        //   jsonp: "callback",
+        //   success:function(data){
+        //     god.init(JSON.parse(data));
+        //     that.initGod();
+        //
+        //   }
+        // });
+        getBusLineList().then(response => {
+          if(response.code === '000') {
+            //alert(121)
+            this.god = response.result
             that.initGod();
-
           }
-        });
+
+          //this.listLoading = false
+
+        })
+
       }
 
 

@@ -32,10 +32,46 @@ export const constantRouterMap = [
 
     children: [{
       path: 'dashboard',
-      meta: { title: '公交处首页', icon: 'index'},
-      component: () => import('@/views/dashboard/index'),
+      meta: { title: '车辆监控', icon: 'busjk'},
+      component: () => import('@/views/map/index'),
 
     }]
+  },
+  {
+    path: '/jiankongline',
+    component: Layout,
+    children: [
+      {
+        path: 'jiankongline',
+        name: '线路监控',
+        component: () => import('@/views/mapline/index'),
+        meta: { title: '线路监控', icon: 'linejk' }
+      }
+    ]
+  },
+  {
+    path: '/xianlu',
+    component: Layout,
+    children: [
+      {
+        path: 'xianlu',
+        name: '线路演示',
+        component: () => import('@/views/xianlu/index'),
+        meta: { title: '线路演示', icon: 'lineys' }
+      }
+    ]
+  },
+  {
+    path: '/guiji',
+    component: Layout,
+    children: [
+      {
+        path: 'guiji',
+        name: '轨迹回放',
+        component: () => import('@/views/guiji/index'),
+        meta: { title: '轨迹回放', icon: 'linehf' }
+      }
+    ]
   },
   {
     path: '/list',
@@ -58,66 +94,6 @@ export const constantRouterMap = [
         name: 'bus',
         component: () => import('@/views/bus/index'),
         meta: { title: '车辆管理', icon: 'bus' }
-      }
-    ]
-  },
-  {
-    path: '/map',
-    component: Layout,
-    children: [
-      {
-        path: 'map',
-        name: 'Map',
-        component: () => import('@/views/map/index'),
-        meta: { title: 'Map', icon: 'map' }
-      }
-    ]
-  },
-  {
-    path: '/jiankong',
-    component: Layout,
-    children: [
-      {
-        path: 'jiankong',
-        name: '车辆监控',
-        component: () => import('@/views/jiankong/index'),
-        meta: { title: '车辆监控', icon: 'map' }
-      }
-    ]
-  },
-  {
-    path: '/jiankongline',
-    component: Layout,
-    children: [
-      {
-        path: 'jiankongline',
-        name: '线路监控',
-        component: () => import('@/views/jiankongline/index'),
-        meta: { title: '线路监控', icon: 'map' }
-      }
-    ]
-  },
-  {
-    path: '/xianlu',
-    component: Layout,
-    children: [
-      {
-        path: 'xianlu',
-        name: '线路演示',
-        component: () => import('@/views/xianlu/index'),
-        meta: { title: '线路演示', icon: 'map' }
-      }
-    ]
-  },
-  {
-    path: '/guiji',
-    component: Layout,
-    children: [
-      {
-        path: 'guiji',
-        name: '轨迹回放',
-        component: () => import('@/views/guiji/index'),
-        meta: { title: '轨迹回放', icon: 'map' }
       }
     ]
   },

@@ -249,19 +249,19 @@ function formatTime(timeStr){
 
 /***初始化***/
 god.lines = {};
-import {lineData} from "@/API/"
+//import {lineData} from "@/API/"
 god.init = function(lineData,isWatch){
   //isWatch 是否监控
-lineData.List2 = JSON.parse(lineData.List2);
-  lineData.List1.map(function(item){
-    if(item.LineId <= 382){//只循环显示到38路
-      god.lines[item.LineId] = new Line(item,isWatch);
+//lineData.List2 = JSON.parse(lineData.List2);
+  lineData.result.map(function(item){
+    if(item.runMethod <= 382){//只循环显示到38路
+      god.lines[item.runMethod] = new Line(item,isWatch);
     }
   });
 
   setInterval(()=>{
-    for(var lineId in god.lines){
-      var line = god.lines[lineId];
+    for(var runMethod in god.lines){
+      var line = god.lines[runMethod];
       if(GJCONFIG.setting.StagnantStop != "0" && isWatch){//滞站检测
         line.checkZhizhan();
       }

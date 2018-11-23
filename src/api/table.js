@@ -75,7 +75,7 @@ export function getBusLineList() {
 
 export function getBusList(data) {
   return request({
-    url: '/busInfo/findOnlineBusListInLine',
+    url: 'http://192.168.88.40:8080/buscenter/busInfo/findOnlineBusListInLine',
     method: 'post',
     data:{
       runMethod:data
@@ -85,7 +85,7 @@ export function getBusList(data) {
 
 export function getBusGPS(data) {
   return request({
-    url: '/line/findLinedetailInfo',
+    url: 'http://192.168.88.40:8080/buscenter/line/findLinedetailInfo',
     method: 'post',
     data:{
       runMethod:data

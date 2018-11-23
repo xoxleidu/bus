@@ -12,7 +12,7 @@
     <!--</el-row>-->
   <!--</el-header>-->
   <el-container>
-    <el-aside width="200px" style="background-color:#1f2d3d;position: absolute;height: 700px;">
+    <el-aside width="200px" style="background-color:#1f2d3d;position: absolute;height: 800px;">
 
       <el-row v-for="line in treelist"  :key="line.id" class="line-list">
 
@@ -53,29 +53,99 @@
     </el-aside>
     <el-main style="padding-left: 200px">
 
+      <el-row :gutter="20">
+        <el-col :span="12">
 
-      <el-steps  align-center>
 
-        <el-step class="buslistput" v-for="car,index in treebuslist.upSiteList"   :id="'id'+car.id" :key="index" :description="car.siteName"></el-step>
-      </el-steps>
+          <el-row class="buslistrow" v-if="treebuslist.upSiteList!=null">
+            <el-row class="buslistrowbt">
+              <el-col :span="3"><span class="buslistrowbt_span">{{treebuslist.lineName}} 上行</span></el-col>
+              <el-col :span="2"><el-button type="success">刷新</el-button></el-col>
+            </el-row>
 
-      <el-steps  align-center>
+            <div v-for="car,index in treebuslist.upSiteList"   :id="'id'+car.id" :key="index">
+              <div class='weui-cell-list'>
+                <div class='weui-cell-circle'></div>
+                <div class='weui-cell-line' style="width: 100%;">
 
-        <el-step class="buslistput" v-for="car,index in treebuslist.downSiteList"   :id="'id'+car.id" :key="index" :description="car.siteName"></el-step>
-      </el-steps>
+                  <div class="weui-cell-name">{{car.siteName}}</div>
+
+
+                  <div v-if="car.busList != null">
+
+                    <div v-for="gps,index in car.busList" :key="index">
+
+
+                      <div v-if="gps.stationState == 1">
+                        <div class='weui-cell-event'><img src='/static/buscome.png' class='buscomegoimg' /></div>
+                      </div>
+                      <div v-if="gps.stationState == 0">
+                        <div class='weui-cell-event-on'><img src='/static/busgo.png' class='buscomegoimg' /> 大约分钟到站 </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </el-row>
+
+
+        </el-col>
+        <el-col :span="12">
+
+
+          <el-row class="buslistrow" v-if="treebuslist.downSiteList!=null">
+            <el-row class="buslistrowbt">
+              <el-col :span="3"><span class="buslistrowbt_span">{{treebuslist.lineName}} 下行</span></el-col>
+              <el-col :span="2"><el-button type="success">刷新</el-button></el-col>
+            </el-row>
+
+            <div v-for="car,index in treebuslist.downSiteList"   :id="'id'+car.id" :key="index">
+              <div class='weui-cell-list'>
+                <div class='weui-cell-circle'></div>
+                <div class='weui-cell-line' style="width: 100%;">
+
+                  <div class="weui-cell-name">{{car.siteName}}</div>
+
+
+                  <div v-if="car.busList != null">
+
+                    <div v-for="gps,index in car.busList" :key="index">
+                      <div v-if="gps.stationState = 0">
+                        <div class='weui-cell-event'><img src='/static/buscome.png' class='buscomegoimg' /></div>
+                      </div>
+                      <div v-if="gps.stationState = 1">
+                        <div class='weui-cell-event-on'><img src='/static/busgo.png' class='buscomegoimg' /> 大约分钟到站 </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </el-row>
+
+
+        </el-col>
+      </el-row>
+
+
 
 
 
 
     </el-main>
   </el-container>
-  <el-footer>Footer</el-footer>
+  <!--<el-footer>Footer</el-footer>-->
 </el-container>
 
 </template>
 <script>
 
-  import AMap from 'AMap';   //在页面中引入高德地图
+
   import { getBusLineList,getBusList,getBusGPS } from '@/api/table'
   import ElRow from "element-ui/packages/row/src/row";
   import $ from 'jQuery'
@@ -185,10 +255,17 @@
   }
 </script>
 <style lang="less">
-  .mymap{
-    width: 100%;
-    height: 700px;
+  .buslistrow{
+    background-color: #f2f6fc;
   }
+  .buslistrowbt{
+    color: #1f2d3d;
+    background-color: #dbe3ea;
+    height: 50px;
+    line-height: 50px;
+    margin-bottom: 20px;
+  }
+
   .line {
     font-weight: bold;
   }
@@ -199,7 +276,7 @@
     background-color: #E9EEF3;
     color: #333;
     text-align: center;
-    height: 700px;
+    max-height: 800px;
   }
   .grid-content {
     border-radius: 4px;
@@ -257,4 +334,52 @@
       &>h2>.el-tree-node__expand-icon{transform:rotate(90deg);}
     }
   }
+  .weui-cell-list{
+    width: 80%;
+    position: relative;
+
+    margin: 0px 50px 0px 150px;
+    float: left;
+  }
+  .weui-cell-line{
+
+    position: relative;
+    margin-left: 5px;
+    border-left: 1px solid #bbb;
+    height: 40px;
+
+  }
+  .weui-cell-circle{
+    border: 1px solid #000;
+    border-radius: 5px;
+    width: 10px;
+    height: 10px;
+    border-color: rgb(0, 162, 255);
+  }
+  .weui-cell-name{
+    position: absolute;
+    font-size:14px;
+    top: -15px;
+    left: 15px;
+  }
+  .weui-cell-event{
+    position: absolute;
+    top: -20px;
+    left: -45px;
+    font-size: 16px;
+
+  }
+  .weui-cell-event-on{
+    position: absolute;
+    top: 5px;
+    left: -115px;
+    font-size: 12px;
+  }
+  .buscomegoimg{
+    width: 30px;
+    height: 25px;
+    border: none;
+    vertical-align: middle;
+  }
+
 </style>

@@ -62,18 +62,6 @@ export const constantRouterMap = [
     ]
   },
   {
-    path: '/guiji',
-    component: Layout,
-    children: [
-      {
-        path: 'guiji',
-        name: '轨迹回放',
-        component: () => import('@/views/guiji/index'),
-        meta: { title: '轨迹回放', icon: 'linehf' }
-      }
-    ]
-  },
-  {
     path: '/list',
     component: Layout,
     children: [

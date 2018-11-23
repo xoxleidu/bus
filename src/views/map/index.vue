@@ -14,7 +14,33 @@
   <el-container>
     <el-aside width="200px" style="background-color:#1f2d3d;position: absolute;height: 700px;">
 
-      <el-row v-for="line in treelist"  :key="line.id" class="line-list">
+
+      <div class="infowindow-list" ref="carMarkerWindow" v-if="carMarkerWindow.runMethod">
+        <div class="item">
+          <strong>线路:</strong>{{carMarkerWindow.lineId}}
+        </div>
+        <div class="item">
+          <strong>车牌号:</strong>冀R{{carMarkerWindow.vehicleNumber}}
+        </div>
+        <div class="item">
+          <strong >GPS 速度:</strong><span :style="carMarkerWindow.speed >=40 ? 'color:red':''">{{carMarkerWindow.speed}}km/h</span> <el-tag type="danger" v-if="carMarkerWindow.speed >=40">超速</el-tag>
+        </div>
+        <div class="item">
+          <strong>上下行:</strong>{{carMarkerWindow.upDown == 1?"下行":"上行"}}</div>
+        <!--<div class="item">-->
+          <!--<strong>站点:</strong>{{getStation(carMarkerWindow)}}</div>-->
+        <!--<div class="item">-->
+          <!--<strong>下一站:</strong>{{getNextStation(carMarkerWindow)}}-->
+        <!--</div>-->
+        <!--<div class="item">-->
+          <!--<strong>日期时间:</strong>-->
+          <!--{{String(carMarkerWindow.GPSTime).substring(0,4)}}年{{String(carMarkerWindow.GPSTime).substring(4,6)}}月{{String(carMarkerWindow.GPSTime).substring(6,8)}}日{{String(carMarkerWindow.GPSTime).substring(8,10)}}点{{String(carMarkerWindow.GPSTime).substring(10,12)}}分{{String(carMarkerWindow.GPSTime).substring(12,14)}}秒-->
+        <!--</div>-->
+      </div>
+
+
+
+      <el-row v-for="line in lineList"  :key="line.id" class="line-list">
 
 
 
@@ -50,7 +76,7 @@
       </el-row>
 
       <!--<el-tree-->
-        <!--:data="treelist"-->
+        <!--:data="lineList"-->
         <!--:props="treebus"-->
         <!--:load="loadNode"-->
         <!--lazy-->
@@ -87,21 +113,11 @@
         AMap: null,
         MapKey: '',
         MapCityName: '',
-
-        //treeList[0].busList.push(busList[0])
-
-        treelist:[{
-        "lineName": "1lu",busList:[ {a:2}]
-        }],
-        treebuslist:[{
-          "lineName": "离线"}],
-        treebus: {
-          label: 'lineName',
-          children: 'vehicleNumber',
-          isLeaf: false
-        },
-        GPSlist:'',
-        treeCount: 1
+        openLine:new Set(),//记录当前展开的跑法
+        lineList:[
+          // {        "lineName": "1lu",busList:[ {a:2}]        }
+          ],
+        carMarkerWindow:{},
       }
     },
     mounted(){
@@ -112,52 +128,12 @@
         var map = that.map = new BMap.Map('JK-map');
         map.setCurrentCity("廊坊市");
         map.centerAndZoom(new BMap.Point(116.726509,39.53446), 13);
+        // map.setMapStyle({
+        //   styleJson:[{}]
+        // });
         that.map.enableScrollWheelZoom(true);
         var traffic = new BMap.TrafficLayer();        // 创建交通流量图层实例
         map.addTileLayer(traffic);                    // 将图层添加到地图上
-
-
-        // var myP1 = new BMap.Point(116.380967,39.913285);    //起点
-        // var myP2 = new BMap.Point(116.424374,39.914668);    //终点
-        // var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/Mario.png", new BMap.Size(32, 70), {    //小车图片
-        //   //offset: new BMap.Size(0, -5),    //相当于CSS精灵
-        //   imageOffset: new BMap.Size(0, 0)    //图片的偏移量。为了是图片底部中心对准坐标点。
-        // });
-        // var driving2 = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: true}});    //驾车实例
-        // driving2.search(myP1, myP2);    //显示一条公交线路
-        //
-        // window.run = function (){
-        //   var driving = new BMap.DrivingRoute(map);    //驾车实例
-        //   driving.search(myP1, myP2);
-        //   driving.setSearchCompleteCallback(function(){
-        //     var pts = driving.getResults().getPlan(0).getRoute(0).getPath();    //通过驾车实例，获得一系列点的数组
-        //     console.log('ptspts')
-        //     console.log(pts)
-        //     var paths = pts.length;    //获得有几个点
-        //
-        //     var carMk = new BMap.Marker(pts[0],{icon:myIcon});
-        //     map.addOverlay(carMk);
-        //     i=0;
-        //     function resetMkPoint(i){
-        //       carMk.setPosition(pts[i]);
-        //       if(i < paths){
-        //         setTimeout(function(){
-        //           i++;
-        //           resetMkPoint(i);
-        //         },100);
-        //       }
-        //     }
-        //     setTimeout(function(){
-        //       resetMkPoint(5);
-        //     },100)
-        //
-        //   });
-        // }
-        //
-        // setTimeout(function(){
-        //   run();
-        // },1500);
-
 
 
       }
@@ -174,9 +150,9 @@
       getBusLineList().then(response => {
         if(response.code === '000') {
           //返回线路赋值
-          this.treelist = response.result
+          this.$set(this.$data,"lineList",response.result);
         }
-
+        this.initReq();
       })
 
 
@@ -185,20 +161,72 @@
     },
     methods: {
       initReq(){
-        // setInterval(()=>{
-        //   getBusList(line.runMethod).then(response => {
-        //     // console.log(response.result)
-        //     if (response.code === '000') {
-        //       response.result.map(bus=>{
-        //         this.busList.map()
-        //         a.time =  bus.time;
-        //         map.update(bus); //marker.setPosition()
-        //       })
-        //       this.$set(line,"busList",response.result);
-        //       // this.treebuslist=response.result;
-        //     }
-        //   })
-        // },3000)
+        window.aa = this.lineList;
+        //初始化轮询
+        setInterval(()=>{
+          var runMethods = Array.from(this.openLine.values());
+          runMethods.map(runMethod=>{
+            getBusList(runMethod).then(response => {
+              if (response.code === '000') {
+                var busList  = response.result;
+                var runMethod = busList[0].runMethod;
+                var line = this.lineList.find(line=>{return line.runMethod = runMethod;});
+                if(!line){
+                  return false;
+                }
+                for(var license in busList){
+                  this.updateBus(line,busList[license])
+                }
+                // this.$set(line,"busList",response.result);
+              }
+            })
+          });
+
+        },3000)
+      },
+      updateBus(line,busData){
+        var that = this;
+        var bus = line.busList.find(item=>{return item.vehicleNumber == busData.vehicleNumber});
+        if(!bus){
+          return false;
+        }
+        //更新车辆信息
+        var convertor = new BMap.Convertor();
+        var pt = new BMap.Point(busData.longitude,busData.latitude);
+        convertor.translate([pt], 1, 5, function(item){
+          pt = item.points[0];
+          if(bus.marker){
+            bus.marker.setRotation(busData.direction)
+            bus.marker.setPosition(pt)
+          }else{
+            var myIcon = new BMap.Icon("/static/point.svg", new BMap.Size(14,14));
+            var label = new BMap.Label(bus.vehicleNumber,{position:pt,offset:new BMap.Size(50,-1)});
+            label.setZIndex(1);
+            label.setStyle({border:"none",background:"none"});
+            label.setContent('<div style="background:#FFF;border-radius:5px; fot-size:15px;padding:2px 5px; border:1px solid #007ed2; color:#007ed2;">\
+            <div style="position:absolute;left:-38px;top:10px; width:39px; border-bottom:1px solid #007ed2;"></div><i class="'+(busData.upDown==1?'el-icon-fa-level-down ':'el-icon-fa-level-up ')+' updown"></i>冀R\
+          '+ busData.vehicleNumber+'\
+          </div>');
+
+            var marker = new BMap.Marker(pt,{title:busData.vehicleNumber,icon:myIcon,rotation:busData.direction});  // 创建标注
+            marker.parentbusData = busData;
+            marker.setLabel(label);
+            marker.addEventListener("click", function(){
+              //console.log(this.parentbusData)
+              //debugger
+              that.$set(that,"carMarkerWindow",this.parentbusData)
+              setTimeout(()=>{
+                var infoWindow = new BMap.InfoWindow(that.$refs.carMarkerWindow,{width:350});
+                this.openInfoWindow(infoWindow); //开启信息窗口
+              })
+            });
+            that.$set(bus,"marker",marker);
+            that.map.addOverlay(marker);              // 将标注添加到地图中
+          }
+        })
+
+
+
       },
 
 
@@ -245,20 +273,24 @@
       //点击线路-加载线路下的车辆信息
       treeToggle(e,line){
         // console.log(line.runMethod)
+        $(e.target).closest(".tree-node").toggleClass("active");
+        var result = $(e.target).closest(".tree-node").hasClass("active");
+        if(result){
         getBusList(line.runMethod).then(response => {
           if (response.code === '000') {
             //返回车辆信息赋值
             this.$set(line,"busList",response.result);
-            // this.treebuslist=response.result;
           }
-        })
+          this.openLine.add(line.runMethod);
+        });
 
-        $(e.target).closest(".tree-node").toggleClass("active");
-        var reslult = $(e.target).closest(".tree-node").hasClass("active");
-        if(data){
-          this.$set(data,"show",true);
         }
-        return reslult;
+
+
+        // if(line){
+        //   this.$set(line,"show",true);
+        // }
+        // return result;
       },
 
       //点击车辆定位

@@ -50,6 +50,18 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/guiji',
+    component: Layout,
+    children: [
+      {
+        path: 'guiji',
+        name: '轨迹回放',
+        component: () => import('@/views/guiji/index'),
+        meta: { title: '轨迹回放', icon: 'map' }
+      }
+    ]
+  },
+  {
     path: '/xianlu',
     component: Layout,
     children: [
@@ -58,6 +70,18 @@ export const constantRouterMap = [
         name: '线路演示',
         component: () => import('@/views/xianlu/index'),
         meta: { title: '线路演示', icon: 'lineys' }
+      }
+    ]
+  },
+  {
+    path: '/xianluedit',
+    component: Layout,
+    children: [
+      {
+        path: 'xianluedit',
+        name: '线路管理',
+        component: () => import('@/views/xianluedit/index'),
+        meta: { title: '线路管理', icon: 'lineys' }
       }
     ]
   },

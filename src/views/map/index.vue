@@ -89,14 +89,67 @@
       <div id="JK-map" class="mymap"></div>
     </el-main>
   </el-container>
-  <el-footer>Footer</el-footer>
+  <el-footer>
+
+    <div class="warning-tips">
+
+
+      <el-row :gutter="24">
+        <el-col :span="8">
+          <dl>
+            <dt>大间距</dt>
+            <dd>
+                <span v-for="djj in YujingData.dajianju">
+                 <!--<router-link :to="'/jiankong-line/'+djj.lineId.replace('路',1)">{{djj.vehicleNumber}}</router-link>-->
+                  <router-link :to="'/jiankong-line/'+djj.lineId">{{djj.lineId}}</router-link>
+                </span>
+
+            </dd>
+          </dl>
+        </el-col>
+        <el-col :span="8">
+          <dl>
+            <dt>双车</dt>
+            <dd>
+                <span v-for="sc in YujingData.shuangche">
+                  <router-link :to="'/jiankong-line/'+sc.lineId">{{sc.lineId}}</router-link>
+                </span>
+            </dd>
+
+          </dl>
+        </el-col>
+
+        <el-col :span="8" >
+          <dl>
+            <dt>滞站</dt>
+            <dd style="height:45px;overflow-y:auto;">
+                <span v-for="item in YujingData.zhizhan">
+                  <router-link :to="'/jiankong-line/'+item.lineId">
+                  {{item.lineId}}
+                  {{item.stationId}}
+                  {{item.vehicleNumber}}
+                </router-link>
+                </span>
+            </dd>
+
+          </dl>
+        </el-col>
+
+      </el-row>
+
+
+    </div>
+
+
+
+  </el-footer>
 </el-container>
 
 </template>
 <script>
 
   import AMap from 'AMap';   //在页面中引入高德地图
-  import { getBusLineList,getBusList,getBusGPS } from '@/api/table'
+  import { getBusLineList,getBusList,getBusYujing } from '@/api/table'
   import ElRow from "element-ui/packages/row/src/row";
   import $ from 'jQuery'
 
@@ -117,6 +170,7 @@
         lineList:[
           // {        "lineName": "1lu",busList:[ {a:2}]        }
           ],
+        YujingData:[],
         carMarkerWindow:{},
       }
     },
@@ -155,6 +209,25 @@
         this.initReq();
       })
 
+      getBusYujing().then(Response => {
+        if(Response.code === '000') {
+
+          var dajianju = {};
+          Response.result.dajianju.map(item=>{
+            dajianju[item.lineId] = "";
+          });
+          var arr = [];
+          for(var key in dajianju){
+            arr.push(key);
+          }
+
+          console.log(arr);
+          this.YujingData = Response.result;
+
+
+
+        }
+      })
 
 
 
@@ -166,6 +239,7 @@
         setInterval(()=>{
           var runMethods = Array.from(this.openLine.values());
           runMethods.map(runMethod=>{
+
             getBusList(runMethod).then(response => {
               if (response.code === '000') {
                 var busList  = response.result;
@@ -179,11 +253,14 @@
                 }
                 // this.$set(line,"busList",response.result);
               }
+
+
             })
           });
 
         },3000)
       },
+
       updateBus(line,busData){
         var that = this;
         var bus = line.busList.find(item=>{return item.vehicleNumber == busData.vehicleNumber});
@@ -450,7 +527,7 @@
     float: left;
     margin: auto 5px;
   }
-  .el-header, .el-footer {
+  .el-header {
     background-color: #B3C0D1;
     color: #333;
     text-align: center;
@@ -493,5 +570,11 @@
       .children{ display:block;}
       &>h2>.el-tree-node__expand-icon{transform:rotate(90deg);}
     }
+  }
+  .warning-tips{position:fixed; z-index: 10; bottom:20px;background: #FFF; height:140px;  border: 1px solid #828790;left:7px;right:7px;
+    dl,dt,dd{margin:0;padding:0;}
+    dl{padding:10px;}
+    dd{padding-top:8px;}
+    dd span{ background:#ffcd40; border-radius: 3px; font-size:14px; display: inline-block; padding:1px 3px; margin-right:3px;}
   }
 </style>

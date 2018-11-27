@@ -1,19 +1,21 @@
 <template>
+
+
+
   <div class="GJ-body">
     <el-row class="GJ-search">
-      <div class="infowindow-list" ref="carMarkerWindow" v-if="carMarkerWindow.GPSLng">
-        <div class="item">
-        </div>
-        <div class="item">
+      <!--<div class="infowindow-list" ref="carMarkerWindow" v-if="carMarkerWindow.GPSLng">-->
+        <!--<div class="item">-->
+        <!--</div>-->
+        <!--<div class="item">-->
           <!--<strong>线路:</strong>{{lines[lines.dict[carMarkerWindow.RouteId]].LineName}}-->
-          <strong>线路:</strong>{{carMarkerWindow.RouteId}}
-        </div>
-        <div class="item">
-          <strong>车牌号:</strong>{{carMarkerWindow.CarCard}}
-        </div>
-        <div class="item">
-          <strong>GPS 速度:</strong>{{carMarkerWindow.GPSSpeed}}km/h
-        </div>
+        <!--</div>-->
+        <!--<div class="item">-->
+          <!--<strong>车牌号:</strong>{{carMarkerWindow.CarCard}}-->
+        <!--</div>-->
+        <!--<div class="item">-->
+          <!--<strong>GPS 速度:</strong>{{carMarkerWindow.GPSSpeed}}km/h-->
+        <!--</div>-->
         <!--<div class="item">-->
           <!--<strong>站点:</strong>-->
           <!--{{getStation(carMarkerWindow)}}-->
@@ -25,7 +27,7 @@
           <!--<strong>日期时间:</strong>-->
           <!--{{carMarkerWindow.GPSTime.substring(0,4)}}年{{carMarkerWindow.GPSTime.substring(4,6)}}月{{carMarkerWindow.GPSTime.substring(6,8)}}日{{carMarkerWindow.GPSTime.substring(8,10)}}点{{carMarkerWindow.GPSTime.substring(10,12)}}分{{carMarkerWindow.GPSTime.substring(12,14)}}秒-->
         <!--</div>-->
-      </div>
+      <!--</div>-->
 
 
       <el-form :inline="true" :model="formInline" >
@@ -52,9 +54,9 @@
 
         <el-form-item>
           <el-button-group>
-            <el-button size="small" type="primary" icon="fa fa-play-circle" @click="playHandler">播放</el-button>
-            <el-button size="small" type="primary" icon="fa fa-pause-circle" @click="pauseHandler">暂停</el-button>
-            <el-button size="small" type="primary" icon="fa fa-stop-circle" @click="stopHandler">停止</el-button>
+            <el-button size="small" type="primary" icon="fa-play-circle" @click="playHandler">播放</el-button>
+            <el-button size="small" type="primary" icon="fa-pause-circle" @click="pauseHandler">暂停</el-button>
+            <el-button size="small" type="primary" icon="fa-stop-circle" @click="stopHandler">停止</el-button>
           </el-button-group>
         </el-form-item>
 
@@ -92,30 +94,12 @@
   </div>
 </template>
 <script>
-  //import { Loading } from 'element-ui';
-  import { Message } from 'element-ui';
 
-  import { getBusGuiji } from '@/api/table'
+
+  import { getBusLineList} from '@/api/table'
   import $ from 'jQuery';
 
-  Date.prototype.Format = function(fmt)
-  { //author: meizz
-    var o = {
-      "M+" : this.getMonth()+1,                 //月份
-      "d+" : this.getDate(),                    //日
-      "h+" : this.getHours(),                   //小时
-      "m+" : this.getMinutes(),                 //分
-      "s+" : this.getSeconds(),                 //秒
-      "q+" : Math.floor((this.getMonth()+3)/3), //季度
-      "S"  : this.getMilliseconds()             //毫秒
-    };
-    if(/(y+)/.test(fmt))
-      fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-    for(var k in o)
-      if(new RegExp("("+ k +")").test(fmt))
-        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
-    return fmt;
-  };
+
   export default {
     data() {
       return {
@@ -137,7 +121,8 @@
         lines:[],
         carInfo:[],
         bus:[],
-        dataList:[]
+        dataList:[],
+        treelist:[]
       }
 
     },
@@ -155,71 +140,34 @@
       }
     },
     computed:{
-      searchParam(){
-
-        var date =  new Date(this.formInline.Date).Format("yyyyMMdd");
-        var startTime = new Date(this.formInline.StartTime).Format("hhmmss");
-        var endTime = new Date(this.formInline.EndTime).Format("hhmmss");
-        var param = {
-          License:this.formInline.License,
-          StartTime:date+startTime,
-          EndTime:date+endTime,
-        };
-        return param;
-
-      }
+      // searchParam(){
+      //
+      //   var date =  new Date(this.formInline.Date).Format("yyyyMMdd");
+      //   var startTime = new Date(this.formInline.StartTime).Format("hhmmss");
+      //   var endTime = new Date(this.formInline.EndTime).Format("hhmmss");
+      //   var param = {
+      //     License:this.formInline.License,
+      //     StartTime:date+startTime,
+      //     EndTime:date+endTime,
+      //   };
+      //   return param;
+      //
+      // }
     },
     mounted() {
 
-      //let loadingInstance = Loading.service({ fullscreen: true,text:"载入数据"});
       var that = this;
 
 
-      // $.ajax({
-      //   url: window.GJCONFIG.localhost+"/Service1.svc/GetData",
-      //   data: { 'value': 1 },
-      //   type: 'GET',
-      //   dataType: "jsonp",
-      //   jsonp: "callback",
-      //   error:function(){
-      //     // Message ({
-      //     //   message:"接口配置不正确！",
-      //     //   type:"warning"
-      //     // })
-      //     //loadingInstance.close();
-      //   },
-      //   success:function(data){
-      //     var loadLines =  JSON.parse(data);
-      //     loadLines.List1 = loadLines.List1.map((item)=>{
-      //       item.SiteList = JSON.parse(item.SiteList);
-      //       item.SiteList2 = JSON.parse(item.SiteList2);
-      //       return item;
-      //     });
-      //
-      //     var lines = [];
-      //     lines = loadLines.List1;
-      //     lines.dict = JSON.parse(loadLines.List2);
-      //     that.$set(that,"lines",lines);
-      //     //loadingInstance.close();
-      //
-      //
-      //     window.mapInit= function(){
-      //       var map = that.map = new BMap.Map('GJ-map');
-      //       map.setCurrentCity("廊坊市")
-      //       map.centerAndZoom(new BMap.Point(116.726509,39.53446), 13);
-      //       that.map.enableScrollWheelZoom(true);
-      //     }
-      //     if(!window.BMap){
-      //       var script = document.createElement("script");
-      //       script.type = "text/javascript";
-      //       script.src = "http://api.map.baidu.com/api?v=2.0&ak=C7kiRgh3qZDHrCbpf9vVGjrN3O9Rf10Q&callback=mapInit";
-      //       document.body.appendChild(script);
-      //     }else{
-      //       mapInit()
-      //     }
-      //   }
-      // });
+      getBusLineList().then(response => {
+        if(response.code === '000') {
+          //alert(121)
+          this.treelist = response.result
+        }
 
+        //this.listLoading = false
+
+      })
 
       window.mapInit= function(){
         var map = that.map = new BMap.Map('GJ-map');
@@ -274,79 +222,57 @@
       searchHandler(){
         var that = this;
 
-        //console.log(this.searchParam)
-        //debugger
-        //let loadingInstance = Loading.service({ fullscreen: true,text:"载入数据"});
 
-        var datarr = {"License":"65037",
-          "StartTime":"20180919185512",
-          "EndTime":"20180919205056"}
 
-        getBusGuiji(datarr).then(Response => {
-          if(Response.code === '000') {
+        $.getJSON("/static/test.js", function(json){
+          console.log(json[0].result);
 
-            var data = Response.result
 
-            if(data.length<5){
-              // Message({
-              //   message:"没有找到数据！"
-              // });
-              return false;
-            }
 
-            that.createBus(data);
-            var polylines = [];
-            var polylinesPromise = [];
-            var convertor = new BMap.Convertor();
-            data.map((item)=>{
-              polylines.push(item.longitude+","+item.latitude)
-            })
+          //that.createBus(data);
+          var data = json[0].result.two
+          var polylines = [];
+          var polylinesPromise = [];
+          var convertor = new BMap.Convertor();
+          data.map((item)=>{
+            polylines.push(item.y+","+item.x)
+          })
 
-            for(var i=0,len=Math.ceil(polylines.length/100);i<len;i++){
-              var a = new Promise((resolve,reject)=>{
-                $.ajax({
-                  url:"https://api.map.baidu.com/geoconv/v1/",
-                  jsonp: "callback",
-                  dataType:"jsonp",
-                  data:{
-                    coords:polylines.slice(i*100,(i+1)*100).join(";"),
-                    from:1,
-                    to:5,
-                    ak:"C7kiRgh3qZDHrCbpf9vVGjrN3O9Rf10Q"
-                  },
-                  success:function(data){
-                    resolve(data)
-                  }
-                });
+          for(var i=0,len=Math.ceil(polylines.length/100);i<len;i++){
+            var a = new Promise((resolve,reject)=>{
+              $.ajax({
+                url:"https://api.map.baidu.com/geoconv/v1/",
+                jsonp: "callback",
+                dataType:"jsonp",
+                data:{
+                  coords:polylines.slice(i*100,(i+1)*100).join(";"),
+                  from:1,
+                  to:5,
+                  ak:"C7kiRgh3qZDHrCbpf9vVGjrN3O9Rf10Q"
+                },
+                success:function(data){
+                  resolve(data)
+                }
               });
-              polylinesPromise.push(a);
-
-            }
-
-
-            Promise.all(polylinesPromise).then(function(points){
-              var linePoints = [];
-              points.map((item)=>{
-                item.result.map((position)=>{
-                  linePoints.push(new BMap.Point(position.x,position.y));
-                })
-              })
-              //console.log(linePoints)
-              var polyline = new BMap.Polyline(linePoints, {strokeColor:"blue", strokeWeight:5, strokeOpacity:0.5});
-              that.map.addOverlay(polyline);   //增加折线
-            })
-
-
-          }else {
-
-            Message({
-              message:"请求数据失败！"
             });
+            polylinesPromise.push(a);
+
           }
 
 
+          Promise.all(polylinesPromise).then(function(points){
+            var linePoints = [];
+            points.map((item)=>{
+              item.result.map((position)=>{
+                linePoints.push(new BMap.Point(position.x,position.y));
+              })
+            })
+            //console.log(linePoints)
+            var polyline = new BMap.Polyline(linePoints, {strokeColor:"blue", strokeWeight:5, strokeOpacity:0.5});
+            that.map.addOverlay(polyline);   //增加折线
+          })
 
-        })
+        });
 
 
 
@@ -398,17 +324,15 @@
           marker.parentData = data;
           marker.setLabel(label);
 
-
-
           marker.addEventListener("click", function(){
             var _this = this;
-
             var infoWindow = new BMap.InfoWindow(that.$refs.carMarkerWindow);
             _this.openInfoWindow(infoWindow); //开启信息窗口
           });
 
           that.map.addOverlay(marker);
           that.$set(that.$data,"bus",marker);
+
 
         })
       },
@@ -424,34 +348,34 @@
           GPSRotate:data.direction,//GPS 方向
           GPSSpeed:data.speed,//GPS 速度
           GPSStatus:data.stateNumber,//GPS 无效定位
-          RouteId:data.lineId,//线路 ID（跑法号）
+          RouteId:data.runMethod,//线路 ID（跑法号）
           Updown:data.upDown,//上下行
           StationNumber:data.stationId,//站点顺序号
         }
         return data;
       },
-      // getStation(carMarkerWindow){//获取当前公交站
-      //   var name = "";
-      //   var _index = 1;
-      //   var _line = this.lines[this.lines.dict[carMarkerWindow.RouteId]];
-      //   var _dict = _line.SiteList2;
-      //   var _updownDict = _dict[carMarkerWindow.Updown];
-      //   if(_updownDict){
-      //     name = _line.SiteList[_updownDict[carMarkerWindow.StationNumber-_index]].SiteName
-      //   }
-      //   return name;
-      //
-      // },
-      // getNextStation(carMarkerWindow){//获取下一站
-      //   var name = "";
-      //   var _line = this.lines[this.lines.dict[carMarkerWindow.RouteId]];
-      //   var _dict = _line.SiteList2;
-      //   var _updownDict = _dict[carMarkerWindow.Updown];
-      //   if(_updownDict){
-      //     name = _line.SiteList[_updownDict[carMarkerWindow.StationNumber]].SiteName
-      //   }
-      //   return name;
-      // }
+      getStation(carMarkerWindow){//获取当前公交站
+        var name = "";
+        var _index = 1;
+        var _line = this.lines[this.lines.dict[carMarkerWindow.RouteId]];
+        var _dict = _line.SiteList2;
+        var _updownDict = _dict[carMarkerWindow.Updown];
+        if(_updownDict){
+          name = _line.SiteList[_updownDict[carMarkerWindow.StationNumber-_index]].SiteName
+        }
+        return name;
+
+      },
+      getNextStation(carMarkerWindow){//获取下一站
+        var name = "";
+        var _line = this.lines[this.lines.dict[carMarkerWindow.RouteId]];
+        var _dict = _line.SiteList2;
+        var _updownDict = _dict[carMarkerWindow.Updown];
+        if(_updownDict){
+          name = _line.SiteList[_updownDict[carMarkerWindow.StationNumber]].SiteName
+        }
+        return name;
+      }
 
     }
   }
@@ -470,8 +394,8 @@
   .GJ-table{
     td{height:25px; color:#777;}
   }
-  .GJ-player{padding: 5px 10px;position:absolute; height:50px;left:0;right:0; z-index: 99; background: rgba(255,255,255,.9); border-top:1px solid #ddd; border-bottom:1px solid #ddd;}
-  .GJ-map{ position: absolute; top:57px; bottom:0; width: 100%; }
+  .GJ-player{padding: 5px 10px;position:absolute; bottom:0;height:50px;left:0;right:0; z-index: 99; background: rgba(255,255,255,.9); border-top:1px solid #ddd; border-bottom:1px solid #ddd;}
+  .GJ-map{ position: absolute; top:57px; bottom:0; width: 100%; height: 500px;}
 
   .GJ-body{
     .infowindow-list{ display: none;}

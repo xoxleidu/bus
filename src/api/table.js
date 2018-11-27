@@ -93,3 +93,18 @@ export function getBusGPS(data) {
   })
 }
 
+export function getBusYujing() {
+  return request({
+    url: 'http://192.168.88.40:8080/buscenter/busInfo/busYujing',
+    method: 'post'
+  })
+}
+
+
+export function getBusGuiji(data) {
+  return request({
+    url: 'http://192.168.88.27:8080/buscenter/busInfo/findBusTrack',
+    method: 'post',
+    data
+  })
+}

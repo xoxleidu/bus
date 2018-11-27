@@ -60,7 +60,7 @@
           <el-row class="buslistrow" v-if="treebuslist.upSiteList!=null">
             <el-row class="buslistrowbt">
               <el-col :span="3"><span class="buslistrowbt_span">{{treebuslist.lineName}} 上行</span></el-col>
-              <el-col :span="2"><el-button type="success">刷新</el-button></el-col>
+              <!--<el-col :span="2"><el-button type="success">刷新</el-button></el-col>-->
             </el-row>
 
             <div v-for="car,index in treebuslist.upSiteList"   :id="'id'+car.id" :key="index">
@@ -99,7 +99,7 @@
           <el-row class="buslistrow" v-if="treebuslist.downSiteList!=null">
             <el-row class="buslistrowbt">
               <el-col :span="3"><span class="buslistrowbt_span">{{treebuslist.lineName}} 下行</span></el-col>
-              <el-col :span="2"><el-button type="success">刷新</el-button></el-col>
+              <!--<el-col :span="2"><el-button type="success">刷新</el-button></el-col>-->
             </el-row>
 
             <div v-for="car,index in treebuslist.downSiteList"   :id="'id'+car.id" :key="index">
@@ -177,7 +177,8 @@
           isLeaf: false
         },
         GPSlist:'',
-        treeCount: 1
+        treeCount: 1,
+        timer:null
       }
     },
     mounted(){
@@ -204,35 +205,31 @@
 
     },
     methods: {
-      initReq(){
-        // setInterval(()=>{
-        //   getBusList(line.runMethod).then(response => {
-        //     // console.log(response.result)
-        //     if (response.code === '000') {
-        //       response.result.map(bus=>{
-        //         this.busList.map()
-        //         a.time =  bus.time;
-        //         map.update(bus); //marker.setPosition()
-        //       })
-        //       this.$set(line,"busList",response.result);
-        //       // this.treebuslist=response.result;
-        //     }
-        //   })
-        // },3000)
+      initReq(line){
+
+      clearInterval(this.timer);
+
+        this.timer=setInterval(()=>{
+          getBusGPS(line.runMethod).then(response => {
+            console.log(response.result)
+            if (response.code === '000') {
+
+              //this.$set(line,"busList",response.result);
+              this.treebuslist=response.result;
+              //debugger;
+            }
+          })
+        },3000)
+
+
       },
 
 
       treeToggle(e,line){
          console.log(e)
 
-        getBusGPS(line.runMethod).then(response => {
-           console.log(response.result)
-          if (response.code === '000') {
 
-            //this.$set(line,"busList",response.result);
-            this.treebuslist=response.result;
-          }
-        })
+        this.initReq(line)
 
         $(e.target).closest(".tree-node").toggleClass("active");
         var reslult = $(e.target).closest(".tree-node").hasClass("active");
@@ -290,7 +287,7 @@
     float: left;
     margin: auto 5px;
   }
-  .el-header, .el-footer {
+  .el-header {
     background-color: #B3C0D1;
     color: #333;
     text-align: center;

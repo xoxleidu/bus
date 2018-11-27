@@ -43,7 +43,7 @@
 
         </el-form-item>
         <el-form-item>
-          <el-select v-model="treelist.lineName" placeholder="请选择线路" @change="searchBusHandler">
+          <el-select v-model="treelist.lineName" placeholder="请选择线路">
             <el-option
               v-for="item in treelist"
               :key="item.runMethod"
@@ -53,20 +53,9 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item v-if="isTreebuslist">
-          <el-select v-model="treebuslist.vehicleNumber" placeholder="请选择线路" @change="searchHandler">
-            <el-option
-              v-for="item in treebuslist"
-              :key="item.vehicleNumber"
-              :label="item.vehicleNumber"
-              :value="item.vehicleNumber">
-            </el-option>
-          </el-select>
+        <el-form-item>
+          <el-button  size="small" type="primary" @click="searchHandler">查询</el-button>
         </el-form-item>
-
-        <!--<el-form-item>-->
-          <!--<el-button  size="small" type="primary" @click="searchHandler">查询</el-button>-->
-        <!--</el-form-item>-->
       </el-form>
     </el-row>
 
@@ -118,27 +107,9 @@
 <script>
 
 
-  import { getBusLineList,getBusGuijiEdit} from '@/api/table'
+  import { getBusLineList} from '@/api/table'
   import $ from 'jQuery';
 
-  Date.prototype.Format = function(fmt)
-  { //author: meizz
-    var o = {
-      "M+" : this.getMonth()+1,                 //月份
-      "d+" : this.getDate(),                    //日
-      "h+" : this.getHours(),                   //小时
-      "m+" : this.getMinutes(),                 //分
-      "s+" : this.getSeconds(),                 //秒
-      "q+" : Math.floor((this.getMonth()+3)/3), //季度
-      "S"  : this.getMilliseconds()             //毫秒
-    };
-    if(/(y+)/.test(fmt))
-      fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-    for(var k in o)
-      if(new RegExp("("+ k +")").test(fmt))
-        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
-    return fmt;
-  };
 
   export default {
     data() {
@@ -162,10 +133,7 @@
         carInfo:[],
         bus:[],
         dataList:[],
-        treelist:[],
-
-        isTreebuslist:false,
-        treebuslist:[]
+        treelist:[]
 
 
         // bzItems:[],
@@ -193,15 +161,19 @@
       }
     },
     computed:{
-      searchParam(){
-
-        var date =  new Date(this.formInline.Date).Format("yyyyMMdd");
-        //var startTime = new Date(this.formInline.StartTime).Format("hhmmss");
-        //var endTime = new Date(this.formInline.EndTime).Format("hhmmss");
-        var param = date;
-        return param;
-
-      }
+      // searchParam(){
+      //
+      //   var date =  new Date(this.formInline.Date).Format("yyyyMMdd");
+      //   var startTime = new Date(this.formInline.StartTime).Format("hhmmss");
+      //   var endTime = new Date(this.formInline.EndTime).Format("hhmmss");
+      //   var param = {
+      //     License:this.formInline.License,
+      //     StartTime:date+startTime,
+      //     EndTime:date+endTime,
+      //   };
+      //   return param;
+      //
+      // }
     },
     mounted() {
 
@@ -281,29 +253,6 @@
         }
 
       },
-
-      searchBusHandler(selVal){
-
-        var reqData = {
-          'runMethod':selVal,
-          'time':this.searchParam
-        }
-
-        console.log(reqData)
-
-
-        getBusGuijiEdit(reqData).then(response => {
-          console.log(response.result)
-          if (response.code === '000') {
-            this.isTreebuslist = true;
-            this.$set(this.$data,"treebuslist",response.result);
-            //this.treebuslist=response.result;
-            //debugger;
-          }
-        })
-
-      },
-
       searchHandler(){
         var that = this;
 

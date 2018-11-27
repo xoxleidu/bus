@@ -108,3 +108,12 @@ export function getBusGuiji(data) {
     data
   })
 }
+
+
+export function getBusGuijiEdit(data) {
+  return request({
+    url: 'http://192.168.88.27:8080/buscenter/line/findGpsBus',
+    method: 'post',
+    data
+  })
+}

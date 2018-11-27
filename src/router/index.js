@@ -57,7 +57,7 @@ export const constantRouterMap = [
         path: 'guiji',
         name: '轨迹回放',
         component: () => import('@/views/guiji/index'),
-        meta: { title: '轨迹回放', icon: 'map' }
+        meta: { title: '轨迹回放', icon: 'guiji' }
       }
     ]
   },
@@ -81,7 +81,7 @@ export const constantRouterMap = [
         path: 'xianluedit',
         name: '线路管理',
         component: () => import('@/views/xianluedit/index'),
-        meta: { title: '线路管理', icon: 'lineys' }
+        meta: { title: '线路管理', icon: 'xledit' }
       }
     ]
   },

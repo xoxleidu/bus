@@ -1,0 +1,25 @@
+[{
+  "id": 107,
+  "city": "LangFang",
+  "lineId": "1",
+  "vehicleId": "103",
+  "vehicleNumber": "63775",
+  "vehicleType": "BUS",
+  "dateTime": 20180919201300,
+  "longitude": 116.696693,
+  "latitude": 39.548732,
+  "direction": "76",
+  "speed": 12,
+  "exception": 0,
+  "runMethod": 11,
+  "lineVersion": "1801111136",
+  "upDown": 0,
+  "stationId": 11,
+  "stationState": 1,
+  "airConditioner": 0,
+  "operationState": "0",
+  "stateNumber": "0",
+  "createdTime": 20181108110709,
+  "nextTime": 0
+}
+]

@@ -101,7 +101,7 @@
             <dd>
                 <span v-for="djj in YujingData.dajianju">
                  <!--<router-link :to="'/jiankong-line/'+djj.lineId.replace('路',1)">{{djj.vehicleNumber}}</router-link>-->
-                  <router-link :to="'/jiankong-line/'+djj.lineId">{{djj.lineId}}</router-link>
+                  <router-link :to="'/mapline/'+djj.dajianju">{{djj}}</router-link>
                 </span>
 
             </dd>
@@ -112,7 +112,7 @@
             <dt>双车</dt>
             <dd>
                 <span v-for="sc in YujingData.shuangche">
-                  <router-link :to="'/jiankong-line/'+sc.lineId">{{sc.lineId}}</router-link>
+                  <router-link :to="'/mapline/'+sc.shuangche">{{sc}}</router-link>
                 </span>
             </dd>
 
@@ -124,10 +124,11 @@
             <dt>滞站</dt>
             <dd style="height:45px;overflow-y:auto;">
                 <span v-for="item in YujingData.zhizhan">
-                  <router-link :to="'/jiankong-line/'+item.lineId">
-                  {{item.lineId}}
-                  {{item.stationId}}
-                  {{item.vehicleNumber}}
+                  <router-link :to="'/jiankong-line/'+item.zhizhan">
+                    {{item}}
+                  <!--{{item.lineId}}-->
+                  <!--{{item.stationId}}-->
+                  <!--{{item.vehicleNumber}}-->
                 </router-link>
                 </span>
             </dd>
@@ -168,10 +169,11 @@
         MapCityName: '',
         openLine:new Set(),//记录当前展开的跑法
         lineList:[
-          // {        "lineName": "1lu",busList:[ {a:2}]        }
+           {        "lineName": "加载中"        }
           ],
         YujingData:[],
         carMarkerWindow:{},
+        timer:null
       }
     },
     mounted(){
@@ -209,34 +211,19 @@
         this.initReq();
       })
 
-      getBusYujing().then(Response => {
-        if(Response.code === '000') {
-
-          var dajianju = {};
-          Response.result.dajianju.map(item=>{
-            dajianju[item.lineId] = "";
-          });
-          var arr = [];
-          for(var key in dajianju){
-            arr.push(key);
-          }
-
-          console.log(arr);
-          this.YujingData = Response.result;
 
 
 
-        }
-      })
 
-
-
+    },
+    beforeDestroy(){
+      clearInterval(this.timer);
     },
     methods: {
       initReq(){
         window.aa = this.lineList;
         //初始化轮询
-        setInterval(()=>{
+        this.timer = setInterval(()=>{
           var runMethods = Array.from(this.openLine.values());
           runMethods.map(runMethod=>{
 
@@ -257,6 +244,44 @@
 
             })
           });
+
+
+          getBusYujing().then(Response => {
+            if(Response.code === '000') {
+
+              var dajianju = {};
+              var shuangche = {};
+              var zhizhan = {};
+              Response.result.dajianju.map(item=>{
+                dajianju[item.lineId] = "";
+              });
+              Response.result.shuangche.map(item=>{
+                shuangche[item.lineId] = "";
+              });
+              Response.result.zhizhan.map(item=>{
+                zhizhan[item.lineId] = "";
+              });
+              var dajianjuArr = [];
+              var shuangcheArr = [];
+              var zhizhanArr = [];
+              for(var key1 in dajianju){
+                //dajianjuArr.push({'dajianju':key1});
+                dajianjuArr.push(key1);
+              }
+              for(var key2 in shuangche){
+                shuangcheArr.push(key2);
+              }
+              for(var key3 in zhizhan){
+                zhizhanArr.push(key3);
+              }
+              //console.log(dajianjuArr);
+
+              this.$set(this.$data.YujingData,"dajianju",dajianjuArr);
+              this.$set(this.$data.YujingData,"shuangche",shuangcheArr);
+              this.$set(this.$data.YujingData,"zhizhan",zhizhanArr);
+
+            }
+          }) ;
 
         },3000)
       },

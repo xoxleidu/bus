@@ -167,7 +167,7 @@
         //treeList[0].busList.push(busList[0])
 
         treelist:[{
-        "lineName": "1lu",busList:[ {a:2}]
+        "lineName": "加载中"
         }],
         treebuslist:[{
           "lineName": "离线"}],
@@ -181,7 +181,11 @@
         timer:null
       }
     },
+    beforeDestroy(){
+      clearInterval(this.timer);
+    },
     mounted(){
+      //console.log(1231);
       //this.loadmap();     //加载地图和相关组件
 
       getBusLineList().then(response => {
@@ -214,8 +218,8 @@
             console.log(response.result)
             if (response.code === '000') {
 
-              //this.$set(line,"busList",response.result);
-              this.treebuslist=response.result;
+              this.$set(this.$data,"treebuslist",response.result);
+              //this.treebuslist=response.result;
               //debugger;
             }
           })
@@ -224,12 +228,25 @@
 
       },
 
+      oneInitReq(line){
+        clearInterval(this.timer);
+        getBusGPS(line.runMethod).then(response => {
+          console.log(response.result)
+          if (response.code === '000') {
+
+            this.$set(this.$data,"treebuslist",response.result);
+            //this.treebuslist=response.result;
+            this.initReq(line)
+          }
+        })
+      },
+
 
       treeToggle(e,line){
          console.log(e)
 
 
-        this.initReq(line)
+        this.oneInitReq(line)
 
         $(e.target).closest(".tree-node").toggleClass("active");
         var reslult = $(e.target).closest(".tree-node").hasClass("active");

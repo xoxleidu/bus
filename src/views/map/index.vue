@@ -86,7 +86,7 @@
       <!--</el-tree>-->
     </el-aside>
     <el-main style="padding-left: 200px">
-      <div id="JK-map" class="mymap"></div>
+      <div id="JK-map" class="mymap" style="height:100%;"></div>
     </el-main>
   </el-container>
   <el-footer>
@@ -196,7 +196,7 @@
       if(!window.BMap){
         var script = document.createElement("script");
         script.type = "text/javascript";
-        script.src = "http://api.map.baidu.com/api?v=2.0&ak=GQwMBW7GulaMd4k3nHoL5M7xZNqF8Y3B&callback=mapInit";
+        script.src = "http://api.map.baidu.com/api?v=2.0&ak=C7kiRgh3qZDHrCbpf9vVGjrN3O9Rf10Q&callback=mapInit";
         document.body.appendChild(script);
       }else{
         mapInit()
@@ -526,7 +526,7 @@
 <style lang="less">
   .mymap{
     width: 100%;
-    height: 700px;
+
   }
   .line {
     font-weight: bold;
@@ -538,7 +538,7 @@
     background-color: #E9EEF3;
     color: #333;
     text-align: center;
-    height: 700px;
+    height: 740px;
   }
   .grid-content {
     border-radius: 4px;
@@ -596,7 +596,7 @@
       &>h2>.el-tree-node__expand-icon{transform:rotate(90deg);}
     }
   }
-  .warning-tips{position:fixed; z-index: 10; bottom:20px;background: #FFF; height:140px;  border: 1px solid #828790;left:7px;right:7px;
+  .warning-tips{position:fixed; z-index: 10; bottom:0px;background: #dedede; height:120px;  border: 1px solid #828790;left:0px;right:0px;
     dl,dt,dd{margin:0;padding:0;}
     dl{padding:10px;}
     dd{padding-top:8px;}

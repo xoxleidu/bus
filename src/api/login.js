@@ -2,9 +2,8 @@ import request from '@/utils/request'
 import qs from 'qs' // 需要安装qs
 
 export function login(userName, passWord) {
-
   return request({
-    url: '/user/login',
+    url: 'http://192.168.88.40:8080/buscenter/user/login',
     method: 'post',
     data: {
       userName,

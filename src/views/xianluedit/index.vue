@@ -54,7 +54,7 @@
         </el-form-item>
 
         <el-form-item v-if="isTreebuslist">
-          <el-select v-model="treebuslist.vehicleNumber" placeholder="请选择线路" @change="searchHandler">
+          <el-select id="selectLine" v-model="treebuslist.vehicleNumber" placeholder="请选择线路" @change="searchHandler">
             <el-option
               v-for="item in treebuslist"
               :key="item.vehicleNumber"
@@ -64,9 +64,9 @@
           </el-select>
         </el-form-item>
 
-        <!--<el-form-item>-->
-          <!--<el-button  size="small" type="primary" @click="searchHandler">查询</el-button>-->
-        <!--</el-form-item>-->
+        <el-form-item v-if="isTreebuslistButton">
+          <el-button class="updataLineButton"  size="medium" type="danger" @click="searchHandlerUpdate">确定当前车辆线路为实际线路</el-button>
+        </el-form-item>
       </el-form>
     </el-row>
 
@@ -111,15 +111,16 @@
 
 
 
-    <div id="GJ-map" class="GJ-map"></div>
+    <div id="GJ-map" class="GJ-map" style="height: 100%;"></div>
 
   </div>
 </template>
 <script>
 
 
-  import { getBusLineList,getBusGuijiEdit} from '@/api/table'
+  import { getBusLineList,getBusGuijiEdit,getBusGuijiEditline,updataBusGuijiEditline} from '@/api/table'
   import $ from 'jQuery';
+  import { Message } from 'element-ui';
 
   Date.prototype.Format = function(fmt)
   { //author: meizz
@@ -165,7 +166,14 @@
         treelist:[],
 
         isTreebuslist:false,
-        treebuslist:[]
+        isTreebuslistButton:false,
+        treebuslist:[],
+
+        searchData:null,
+
+        updataNewLine:[],
+
+        polyline:null,
 
 
         // bzItems:[],
@@ -283,85 +291,213 @@
       },
 
       searchBusHandler(selVal){
+        var that = this;
 
-        var reqData = {
+        this.searchData = {
           'runMethod':selVal,
           'time':this.searchParam
         }
 
-        console.log(reqData)
 
 
-        getBusGuijiEdit(reqData).then(response => {
+        //console.log(this.searchData)
+
+        getBusGuijiEdit(this.searchData).then(response => {
           console.log(response.result)
           if (response.code === '000') {
             this.isTreebuslist = true;
+            this.isTreebuslistButton = false;
+            that.map.removeOverlay(this.polyline);
+            that.clearMapInfo();
             this.$set(this.$data,"treebuslist",response.result);
             //this.treebuslist=response.result;
             //debugger;
           }
         })
 
+
+
+        //测试文件
+
+        // $.getJSON("/static/test.js", function(json){
+        //
+        //   console.log(json[0].result);
+        //
+        //   //that.createBus(data);
+        //   var data = json[0].result.one
+        //   var polylines = [];
+        //   var polylinesPromise = [];
+        //   var convertor = new BMap.Convertor();
+        //   data.map((item)=>{
+        //     polylines.push(item.y+","+item.x)
+        //   })
+        //
+        //   for(var i=0,len=Math.ceil(polylines.length/100);i<len;i++){
+        //     var a = new Promise((resolve,reject)=>{
+        //       $.ajax({
+        //         url:"https://api.map.baidu.com/geoconv/v1/",
+        //         jsonp: "callback",
+        //         dataType:"jsonp",
+        //         data:{
+        //           coords:polylines.slice(i*100,(i+1)*100).join(";"),
+        //           from:1,
+        //           to:5,
+        //           ak:"C7kiRgh3qZDHrCbpf9vVGjrN3O9Rf10Q"
+        //         },
+        //         success:function(data){
+        //           resolve(data)
+        //         }
+        //       });
+        //     });
+        //     polylinesPromise.push(a);
+        //
+        //   }
+        //
+        //
+        //   Promise.all(polylinesPromise).then(function(points){
+        //     var linePoints = [];
+        //     points.map((item)=>{
+        //       item.result.map((position)=>{
+        //         linePoints.push(new BMap.Point(position.x,position.y));
+        //       })
+        //     })
+        //     //console.log(linePoints)
+        //     var polyline = new BMap.Polyline(linePoints, {strokeColor:"blue", strokeWeight:5, strokeOpacity:0.5});
+        //     that.map.addOverlay(polyline);   //增加折线
+        //   })
+        //
+        // });
+
+
       },
 
-      searchHandler(){
+      searchHandler(selVal){
         var that = this;
 
+        this.searchData.vehicleNumber = selVal
+        this.isTreebuslistButton = false;
+        that.map.removeOverlay(this.polyline);
+        that.clearMapInfo();
+        console.log(this.searchData);
 
 
-        $.getJSON("/static/test.js", function(json){
-          console.log(json[0].result);
+        getBusGuijiEditline(this.searchData).then(response => {
+          console.log(response.result)
+          if (response.code === '000') {
 
+            var data = response.result.line;
+            this.updataNewLine = response.result;
+            this.isTreebuslistButton = true;
 
+            this.createBus(data);
 
-          //that.createBus(data);
-          var data = json[0].result.two
-          var polylines = [];
-          var polylinesPromise = [];
-          var convertor = new BMap.Convertor();
-          data.map((item)=>{
-            polylines.push(item.y+","+item.x)
-          })
+            var polylines = [];
+            var polylinesPromise = [];
+            var convertor = new BMap.Convertor();
+            data.map((item)=>{
+              polylines.push(item.y+","+item.x)
+            })
 
-          for(var i=0,len=Math.ceil(polylines.length/100);i<len;i++){
-            var a = new Promise((resolve,reject)=>{
-              $.ajax({
-                url:"https://api.map.baidu.com/geoconv/v1/",
-                jsonp: "callback",
-                dataType:"jsonp",
-                data:{
-                  coords:polylines.slice(i*100,(i+1)*100).join(";"),
-                  from:1,
-                  to:5,
-                  ak:"C7kiRgh3qZDHrCbpf9vVGjrN3O9Rf10Q"
-                },
-                success:function(data){
-                  resolve(data)
-                }
+            for(var i=0,len=Math.ceil(polylines.length/100);i<len;i++){
+              var a = new Promise((resolve,reject)=>{
+                $.ajax({
+                  url:"https://api.map.baidu.com/geoconv/v1/",
+                  jsonp: "callback",
+                  dataType:"jsonp",
+                  data:{
+                    coords:polylines.slice(i*100,(i+1)*100).join(";"),
+                    from:1,
+                    to:5,
+                    ak:"C7kiRgh3qZDHrCbpf9vVGjrN3O9Rf10Q"
+                  },
+                  success:function(data){
+                    resolve(data)
+                  }
+                });
               });
-            });
-            polylinesPromise.push(a);
+              polylinesPromise.push(a);
+
+            }
+
+
+            Promise.all(polylinesPromise).then(function(points){
+              var linePoints = [];
+              points.map((item)=>{
+                item.result.map((position)=>{
+                  linePoints.push(new BMap.Point(position.x,position.y));
+                })
+              })
+              //console.log(linePoints)
+              that.polyline = new BMap.Polyline(linePoints, {strokeColor:"blue", strokeWeight:5, strokeOpacity:0.5});
+              that.map.addOverlay(that.polyline);   //增加折线
+            })
+
+
 
           }
 
 
-          Promise.all(polylinesPromise).then(function(points){
-            var linePoints = [];
-            points.map((item)=>{
-              item.result.map((position)=>{
-                linePoints.push(new BMap.Point(position.x,position.y));
-              })
-            })
-            //console.log(linePoints)
-            var polyline = new BMap.Polyline(linePoints, {strokeColor:"blue", strokeWeight:5, strokeOpacity:0.5});
-            that.map.addOverlay(polyline);   //增加折线
-          })
+        })
 
-        });
 
 
 
       },
+
+      searchHandlerUpdate(){
+
+        console.log(this.updataNewLine)
+
+
+        this.$confirm('此操作将保存线路信息, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(() => {
+
+          updataBusGuijiEditline(this.updataNewLine).then(response => {
+            console.log(response.result)
+            if (response.code === '000') {
+
+              this.searchData = null;
+              this.updataNewLine = [];
+              this.isTreebuslist = false;
+              this.isTreebuslistButton = false;
+
+
+            }
+          })
+
+          this.$message({
+            type: 'success',
+            message: '保存成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消保存'
+          });
+        });
+
+
+
+
+      },
+
+      clearMapInfo(){
+        var that = this;
+        that.map.clearOverlays();//清空地图
+        that.$set(that.$data,"bus",{});//清空对象
+        that.$set(that.$data,"dataList",[]);//清空对象列表
+        //that.$set(that.$data,"dataList",data);
+        that.$set(that.player,"current",0);
+        // that.$set(that.player,"speed","1");
+        that.$set(that.player,"played",false);
+        clearInterval(that.player.timerId);//清除动画
+      },
+
+
       createBus(data){
         var that = this;
         //每次查询后创建一个新的bus、需要先清空之前得信息
@@ -425,17 +561,17 @@
         if(!data){return false };
         var data = {
           //CarCard:this.formInline.License,//车牌号
-          CarCard:data.vehicleNumber,//车牌号
+          CarCard:this.searchData.vehicleNumber,//车牌号
           //GPSTime:String(data.createdTime),//GPS 日期时间
-          GPSTime:data.dateTime,//GPS 日期时间
-          GPSLat:data.latitude,//GPS 纬度
-          GPSLng:data.longitude,//GPS 经度
-          GPSRotate:data.direction,//GPS 方向
-          GPSSpeed:data.speed,//GPS 速度
-          GPSStatus:data.stateNumber,//GPS 无效定位
-          RouteId:data.runMethod,//线路 ID（跑法号）
-          Updown:data.upDown,//上下行
-          StationNumber:data.stationId,//站点顺序号
+          //GPSTime:data.dateTime,//GPS 日期时间
+          GPSLat:data.x,//GPS 纬度
+          GPSLng:data.y,//GPS 经度
+          GPSRotate:174,//GPS 方向
+          GPSSpeed:20,//GPS 速度
+          //GPSStatus:data.stateNumber,//GPS 无效定位
+          //RouteId:data.runMethod,//线路 ID（跑法号）
+          //Updown:data.upDown,//上下行
+          //StationNumber:data.stationId,//站点顺序号
         }
         return data;
       },
@@ -473,14 +609,24 @@
   .el-card__header{ padding: 10px;}
   .el-card__body{padding:0 !important;}
   .el-card{ box-shadow: none !important; border-radius: 0 !important;}
-  .GJ-search{ padding: 10px;background: #FFF; margin-bottom: 10px;border-bottom:1px solid #828790; box-sizing: border-box; z-index: 2;}
+  .GJ-search{
+
+    padding: 20px;
+    background: #FFF;
+    margin-bottom: 10px;
+    border-bottom:1px solid #828790;
+    box-sizing: border-box;
+    z-index: 2;
+  .updataLineButton{
+    padding: 12px;
+  }}
   .GJ-body{position: absolute;top: 0;bottom:0;left:0;right:0;}
   .GJ-tools{position:absolute; top:0;bottom:0;left:0;right:0;}
   .GJ-table{
     td{height:25px; color:#777;}
   }
-  .GJ-player{padding: 5px 10px;position:absolute; bottom:0;height:50px;left:0;right:0; z-index: 99; background: rgba(255,255,255,.9); border-top:1px solid #ddd; border-bottom:1px solid #ddd;}
-  .GJ-map{ position: absolute; top:57px; bottom:0; width: 100%; height: 500px;}
+  .GJ-player{margin:0px 20px;padding: 5px 10px;position:absolute; top:80px;height:50px;left:0;right:0; z-index: 99; background: rgba(255,255,255,.9); border:1px solid #ddd;}
+  .GJ-map{ position: absolute; top:57px; bottom:0; width: 100%;}
 
   .GJ-body{
     .infowindow-list{ display: none;}
@@ -493,4 +639,6 @@
       strong{ color:#333;  padding-right:1em; width:5em; display:inline-block;}
     }
   }
+
+
 </style>

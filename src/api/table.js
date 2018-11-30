@@ -117,3 +117,20 @@ export function getBusGuijiEdit(data) {
     data
   })
 }
+
+
+export function getBusGuijiEditline(data) {
+  return request({
+    url: 'http://192.168.88.27:8080/buscenter/line/findLineHistoryLocus',
+    method: 'post',
+    data
+  })
+}
+
+export function updataBusGuijiEditline(data) {
+  return request({
+    url: 'http://192.168.88.27:8080/buscenter/line/insertBus',
+    method: 'post',
+    data
+  })
+}

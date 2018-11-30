@@ -5,8 +5,8 @@
         <el-input placeholder="请输入内容" v-model="inputSearch" @keyup.enter.native="onSubmitSearch"
                   class="input-with-select">
           <el-select v-model="selectSearch" slot="prepend" placeholder="请选择" style="width: 100px;">
-            <el-option label="线路" value="0"></el-option>
-            <el-option label="车牌号" value="1"></el-option>
+
+            <el-option label="车牌号" value="0"></el-option>
           </el-select>
         </el-input>
       </el-col>
@@ -49,88 +49,100 @@
       <!--</template>-->
       <!--</el-table-column>-->
       <el-table-column
-        label="个人信息"
+        label="车辆基本信息"
         width="180"
         align="center">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <p>车辆登记编号: {{ scope.row.registrationNumber }}</p>
-            <p>登记日期: {{ scope.row.registrationDate }} | 座位数: {{ scope.row.seating }} | 油耗: {{ scope.row.fuelConsumption }}</p>
-            <p>车辆识别码: {{ scope.row.identificationCode }} | 发动机号: {{ scope.row.engineNo }}</p>
-            <p>厂牌号: {{ scope.row.factoryBrand }}</p>
-            <p>车身长: {{ scope.row.busLength }} | 车身宽: {{ scope.row.busWide }} | 车身高: {{ scope.row.busHigh }}</p>
-            <p>车标记: {{ scope.row.airConditioned == 1 ? "空调车":"非空调车"}}</p>
-            <p>备注: {{ scope.row.busNote }}</p>
+
+            <p>发动机号: {{ scope.row.engineNumber }}</p>
+            <p>厂牌号: {{ scope.row.brandCachet }}</p>
+            <!--<p>车身长: {{ scope.row.busLength }} | 车身宽: {{ scope.row.busWide }} | 车身高: {{ scope.row.busHigh }}</p>-->
+            <!--<p>车标记: {{ scope.row.airConditioned == 1 ? "空调车":"非空调车"}}</p>-->
+            <!--<p>备注: {{ scope.row.busNote }}</p>-->
             <div slot="reference" class="name-wrapper">
-              <div v-if="scope.row.operationState == 0" class="avatartablerowfacediv">
-                <el-tag type="danger">运营中</el-tag>
-              </div>
-              <div v-else class="avatartablerowfacediv">
-                <el-tag type="success">非运营</el-tag>
-              </div>
+              <!--<div v-if="scope.row.operationState == 0" class="avatartablerowfacediv">-->
+                <!--<el-tag type="danger">运营中</el-tag>-->
+              <!--</div>-->
+              <!--<div v-else class="avatartablerowfacediv">-->
+                <!--<el-tag type="success">非运营</el-tag>-->
+              <!--</div>-->
               <div class="avatartablerownamediv">
-                <el-tag size="medium">{{ scope.row.licenseNumber }}</el-tag>
+                <el-tag size="medium">{{ scope.row.busLicense }}</el-tag>
               </div>
             </div>
           </el-popover>
         </template>
       </el-table-column>
+      <!--<el-table-column-->
+        <!--sortable-->
+        <!--prop="pathId"-->
+        <!--label="路线"-->
+        <!--width="80">-->
+      <!--</el-table-column>-->
       <el-table-column
-        sortable
-        prop="pathId"
-        label="路线"
-        width="80">
-      </el-table-column>
-      <el-table-column
-        sortable
-        prop="affiliationCompany"
+
+        prop="remarks"
         label="所属公司"
         width="90">
       </el-table-column>
+      <!--<el-table-column-->
+        <!--label="进出站状态"-->
+        <!--width="100">-->
+        <!--<template slot-scope="scope">-->
+          <!--{{ scope.row.stationStatus == 0 ? "站外" : "站内"}}-->
+        <!--</template>-->
+      <!--</el-table-column>-->
+      <!--<el-table-column-->
+        <!--label="上下行状态"-->
+        <!--width="100">-->
+        <!--<template slot-scope="scope">-->
+          <!--{{ scope.row.upDownStream == 0 ? "上行" : "下行"}}-->
+        <!--</template>-->
+      <!--</el-table-column>-->
       <el-table-column
-        label="进出站状态"
-        width="100">
-        <template slot-scope="scope">
-          {{ scope.row.stationStatus == 0 ? "站外" : "站内"}}
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="上下行状态"
-        width="100">
-        <template slot-scope="scope">
-          {{ scope.row.upDownStream == 0 ? "上行" : "下行"}}
-        </template>
+        align="center"
+        prop="brandCachet"
+        label="产牌型号"
+        width="160">
       </el-table-column>
       <el-table-column
         sortable
-        prop="vehicleType"
-        label="车辆类型"
+        prop="recordDate"
+        label="登记日期"
+        width="120">
+      </el-table-column>
+      <el-table-column
+        sortable
+        prop="seating"
+        label="座位数"
         width="110">
       </el-table-column>
+      <!--<el-table-column-->
+        <!--sortable-->
+        <!--prop="drivingKm"-->
+        <!--label="行驶公里"-->
+        <!--width="110">-->
+      <!--</el-table-column>-->
+      <!--<el-table-column-->
+        <!--sortable-->
+        <!--prop="faultid"-->
+        <!--label="事故信息"-->
+        <!--width="110">-->
+      <!--</el-table-column>-->
       <el-table-column
-        sortable
-        prop="drivingKm"
-        label="行驶公里"
-        width="110">
-      </el-table-column>
-      <el-table-column
-        sortable
-        prop="faultid"
-        label="事故信息"
-        width="110">
-      </el-table-column>
-      <el-table-column
-        sortable
-        prop="maintenanceid"
+
+        prop="vehicleExamination"
         label="验车信息"
         width="110">
       </el-table-column>
-      <el-table-column
-        sortable
-        prop="manufactureDate"
-        label="出厂日期"
-        width="110">
-      </el-table-column>
+      <!--<el-table-column-->
+        <!--sortable-->
+        <!--prop="manufactureDate"-->
+        <!--label="出厂日期"-->
+        <!--width="110">-->
+      <!--</el-table-column>-->
 
       <!--<el-table-column
         align="center"
@@ -172,15 +184,16 @@
       :total="total">
     </el-pagination>
 
+    <!--双击弹出层-->
     <el-dialog :visible.sync="dialogImgVisible">
         <el-form ref="imgForm" :rules="rules" :model="temp"
                  label-position="left" label-width="70px"
                  style="width: 700px; margin:auto; text-align: center;">
           <el-row class="dialogtempimgcard">
             <p>车辆登记编号: {{ temp.registrationNumber }}</p>
-            <p>登记日期: {{ temp.registrationDate }} | 座位数: {{ temp.seating }} | 油耗: {{ temp.fuelConsumption }}</p>
-            <p>车辆识别码: {{ temp.identificationCode }} | 发动机号: {{ temp.engineNo }}</p>
-            <p>厂牌号: {{ temp.factoryBrand }}</p>
+            <p>登记日期: {{ temp.recordDate }} | 座位数: {{ temp.seating }} | 油耗: {{ temp.fuelConsumption }}</p>
+            <p>车辆识别码: {{ temp.vehicleIdentification }} | 发动机号: {{ temp.engineNumber }}</p>
+            <p>厂牌号: {{ temp.brandCachet }}</p>
             <p>车身长: {{ temp.busLength }} | 车身宽: {{ temp.busWide }} | 车身高: {{ temp.busHigh }}</p>
             <p>车标记: {{ temp.airConditioned == 1 ? "空调车":"非空调车"}}</p>
             <p>备注: {{ temp.busNote }}</p>
@@ -198,137 +211,143 @@
         <el-row :gutter="16">
           <el-col :span="2">车牌号</el-col>
           <el-col :span="5">
-            <el-input v-model="temp.licenseNumber"/>
+            <el-input v-model="temp.busLicense" :disabled="true"/>
           </el-col>
           <el-col :span="2">座位</el-col>
           <el-col :span="4">
             <el-input v-model="temp.seating"/>
           </el-col>
-          <el-col :span="2">油耗</el-col>
-          <el-col :span="4">
-            <el-input v-model="temp.fuelConsumption"/>
-          </el-col>
+          <!--<el-col :span="2">油耗</el-col>-->
+          <!--<el-col :span="4">-->
+            <!--<el-input v-model="temp.fuelConsumption"/>-->
+          <!--</el-col>-->
         </el-row>
 
         <el-row :gutter="16">
           <el-col :span="3">车辆识别码</el-col>
           <el-col :span="6">
-            <el-input v-model="temp.identificationCode"/>
+            <el-input v-model="temp.vehicleIdentification" :disabled="true"/>
           </el-col>
           <el-col :span="3">发动机号</el-col>
           <el-col :span="6">
-            <el-input v-model="temp.engineNo"/>
+            <el-input v-model="temp.engineNumber" :disabled="true"/>
           </el-col>
         </el-row>
 
         <el-row :gutter="16">
           <el-col :span="2">厂牌号</el-col>
           <el-col :span="6">
-            <el-input v-model="temp.factoryBrand"/>
+            <el-input v-model="temp.brandCachet" :disabled="true" />
           </el-col>
-          <el-col :span="6">
-            <el-radio-group v-model="temp.airConditioned">
-              <el-radio-button label="1">空调车</el-radio-button>
-              <el-radio-button label="2">非空调车</el-radio-button>
-            </el-radio-group>
-          </el-col>
+          <!--<el-col :span="6">-->
+            <!--<el-radio-group v-model="temp.airConditioned">-->
+              <!--<el-radio-button label="1">空调车</el-radio-button>-->
+              <!--<el-radio-button label="2">非空调车</el-radio-button>-->
+            <!--</el-radio-group>-->
+          <!--</el-col>-->
         </el-row>
 
-        <el-row :gutter="16">
-          <el-col :span="2">车身长</el-col>
-          <el-col :span="5">
-            <el-input v-model="temp.busLength"/>
-          </el-col>
-          <el-col :span="2">车身宽</el-col>
-          <el-col :span="4">
-            <el-input v-model="temp.busWide"/>
-          </el-col>
-          <el-col :span="2">车身高</el-col>
-          <el-col :span="4">
-            <el-input v-model="temp.busHigh"/>
-          </el-col>
-        </el-row>
+        <!--<el-row :gutter="16">-->
+          <!--<el-col :span="2">车身长</el-col>-->
+          <!--<el-col :span="5">-->
+            <!--<el-input v-model="temp.busLength"/>-->
+          <!--</el-col>-->
+          <!--<el-col :span="2">车身宽</el-col>-->
+          <!--<el-col :span="4">-->
+            <!--<el-input v-model="temp.busWide"/>-->
+          <!--</el-col>-->
+          <!--<el-col :span="2">车身高</el-col>-->
+          <!--<el-col :span="4">-->
+            <!--<el-input v-model="temp.busHigh"/>-->
+          <!--</el-col>-->
+        <!--</el-row>-->
 
         <el-row :gutter="16" class="form_data_label">工作信息</el-row>
 
         <el-row :gutter="16">
-          <el-col :span="6">
-            <el-radio-group v-model="temp.operationState">
-              <el-radio-button label="0">运营中</el-radio-button>
-              <el-radio-button label="1">非运营</el-radio-button>
-            </el-radio-group>
-          </el-col>
+          <!--<el-col :span="6">-->
+            <!--<el-radio-group v-model="temp.operationState">-->
+              <!--<el-radio-button label="0">运营中</el-radio-button>-->
+              <!--<el-radio-button label="1">非运营</el-radio-button>-->
+            <!--</el-radio-group>-->
+          <!--</el-col>-->
           <el-col :span="3">所属公司</el-col>
           <el-col :span="4">
-            <el-select v-model="temp.affiliationCompany" placeholder="please select your zone">
-              <el-option label="Zone one" value="0"/>
-              <el-option label="Zone two" value="1"/>
-              <el-option label="Zone three" value="2"/>
-              <el-option label="Zone fore" value="3"/>
+            <el-select v-model="temp.remarks" placeholder="please select your zone">
+              <el-option label="一公司" value="一公司"/>
+              <el-option label="一公司备用" value="一公司备用"/>
+              <el-option label="二公司" value="二公司"/>
+              <el-option label="二公司备用" value="二公司备用"/>
+              <el-option label="三公司" value="三公司"/>
+              <el-option label="三公司备用" value="三公司备用"/>
+              <el-option label="四公司" value="四公司"/>
+              <el-option label="四公司备用" value="四公司备用"/>
+              <el-option label="班线公司" value="班线公司"/>
+              <el-option label="办公室" value="办公室"/>
+              <el-option label="后勤" value="后勤"/>
+              <el-option label="警车" value="警车"/>
+              <el-option label="票务" value="票务"/>
+              <el-option label="维修中心" value="维修中心"/>
+
             </el-select>
           </el-col>
-          <el-col :span="3">所属路线</el-col>
-          <el-col :span="4">
-            <el-select v-model="temp.pathId" placeholder="please select your zone">
-              <el-option label="Zone one" value="1"/>
-              <el-option label="Zone two" value="2"/>
-            </el-select>
-          </el-col>
+          <!--<el-col :span="3">所属路线</el-col>-->
+          <!--<el-col :span="4">-->
+            <!--<el-select v-model="temp.pathId" placeholder="please select your zone">-->
+              <!--<el-option label="Zone one" value="1"/>-->
+              <!--<el-option label="Zone two" value="2"/>-->
+            <!--</el-select>-->
+          <!--</el-col>-->
         </el-row>
 
-        <el-row :gutter="16">
-          <el-col :span="3">车辆类型</el-col>
-          <el-col :span="5">
-            <el-select v-model="temp.vehicleType" placeholder="please select your zone">
-              <el-option label="Zone one" value="1"/>
-              <el-option label="Zone two" value="2"/>
-            </el-select>
-          </el-col>
-          <el-col :span="6">
-            <el-radio-group v-model="temp.stationStatus">
-              <el-radio-button label="1">站外</el-radio-button>
-              <el-radio-button label="2">站内</el-radio-button>
-            </el-radio-group>
-          </el-col>
-          <el-col :span="6">
-            <el-radio-group v-model="temp.upDownStream">
-              <el-radio-button label="1">上行</el-radio-button>
-              <el-radio-button label="2">下行</el-radio-button>
-            </el-radio-group>
-          </el-col>
-        </el-row>
+        <!--<el-row :gutter="16">-->
+          <!--<el-col :span="3">车辆类型</el-col>-->
+          <!--<el-col :span="5">-->
+            <!--<el-select v-model="temp.vehicleType" placeholder="please select your zone">-->
+              <!--<el-option label="Zone one" value="1"/>-->
+              <!--<el-option label="Zone two" value="2"/>-->
+            <!--</el-select>-->
+          <!--</el-col>-->
+          <!--<el-col :span="6">-->
+            <!--<el-radio-group v-model="temp.stationStatus">-->
+              <!--<el-radio-button label="1">站外</el-radio-button>-->
+              <!--<el-radio-button label="2">站内</el-radio-button>-->
+            <!--</el-radio-group>-->
+          <!--</el-col>-->
+          <!--<el-col :span="6">-->
+            <!--<el-radio-group v-model="temp.upDownStream">-->
+              <!--<el-radio-button label="1">上行</el-radio-button>-->
+              <!--<el-radio-button label="2">下行</el-radio-button>-->
+            <!--</el-radio-group>-->
+          <!--</el-col>-->
+        <!--</el-row>-->
 
         <el-row :gutter="16" class="form_data_label">健康信息</el-row>
         <el-row :gutter="16">
+
+          <el-col :span="3">验车时间</el-col>
           <el-col :span="6">
-            <el-radio-group v-model="temp.maintenanceid">
-              <el-radio-button label="0">已检验</el-radio-button>
-              <el-radio-button label="1">未检验</el-radio-button>
-            </el-radio-group>
-          </el-col>
-          <el-col :span="3">事故信息</el-col>
-          <el-col :span="6">
-            <el-input v-model="temp.faultid" :disabled="true" />
+            <el-input v-model="temp.vehicleExamination" :disabled="true" />
           </el-col>
         </el-row>
 
-        <el-row :gutter="16">
-          <el-col :span="3">出厂日期</el-col>
-          <el-col :span="6">
-            <el-input v-model="temp.manufactureDate" :disabled="true" />
-          </el-col>
-          <el-col :span="3">行驶公里</el-col>
-          <el-col :span="6">
-            <el-input v-model="temp.drivingKm" :disabled="true" />
-          </el-col>
-        </el-row>
+        <!--<el-row :gutter="16">-->
+          <!--<el-col :span="3">出厂日期</el-col>-->
+          <!--<el-col :span="6">-->
+            <!--<el-input v-model="temp.manufactureDate" :disabled="true" />-->
+          <!--</el-col>-->
+          <!--<el-col :span="3">行驶公里</el-col>-->
+          <!--<el-col :span="6">-->
+            <!--<el-input v-model="temp.drivingKm" :disabled="true" />-->
+          <!--</el-col>-->
+        <!--</el-row>-->
 
-        <el-row :gutter="16">
-          <el-col :span="2">备注</el-col>
-          <el-col :span="16">
-            <el-input v-model="temp.busNote" type="textarea"/>
-          </el-col>
-        </el-row>
+        <!--<el-row :gutter="16">-->
+          <!--<el-col :span="2">备注</el-col>-->
+          <!--<el-col :span="16">-->
+            <!--<el-input v-model="temp.busNote" type="textarea"/>-->
+          <!--</el-col>-->
+        <!--</el-row>-->
 
 
       </el-form>
@@ -356,25 +375,25 @@
 
         /*{
 
-          "licenseNumber": "冀R88888",//车牌号
+          "busLicense": "冀R88888",//车牌号
           "pathId": 1,//路线id
           "operationState": -1,//运营状态（0：运营中  -1：非运营）
-          "affiliationCompany": "中交天枢",//所属公司
+          "remarks": "中交天枢",//所属公司
           "stationStatus": 1,//进出站状态（0：站外 1：站内）
           "upDownStream": 0,//上下行状态（0：上行  1：下行）
           "vehicleType": "城市公交"//车辆类型
           "drivingKm": 55555,//行驶公里
           "faultid": "1",//事故信息
-          "maintenanceid": "已检验",//验车信息
+          "vehicleExamination": "已检验",//验车信息
           "manufactureDate": "2018-10-26",//出厂日期
 
           "registrationNumber": 22222,//车辆登记编号
-          "registrationDate": "2018-10-26",//登记日期
+          "recordDate": "2018-10-26",//登记日期
           "seating": 40,//座位
           "fuelConsumption": "30L",//油耗
-          "identificationCode": "44444",//车辆识别码
-          "engineNo": 33333,//发动机号
-          "factoryBrand": 111111,//厂牌号
+          "vehicleIdentification": "44444",//车辆识别码
+          "engineNumber": 33333,//发动机号
+          "brandCachet": 111111,//厂牌号
           "busLength": 11530.01,//车长
           "busWide": 2500.01,//车身宽
           "busHigh": 3040.01,//车身高
@@ -391,30 +410,30 @@
         listLoading: true,
         tableData: [{
           id: 1,
-          licenseNumber: "冀R88888",//车牌号
-          pathId: 1,//路线id
-          operationState: -1,//运营状态（0：运营中  -1：非运营）
-          affiliationCompany: "中交天枢",//所属公司
-          stationStatus: 1,//进出站状态（0：站外 1：站内）
-          upDownStream: 0,//上下行状态（0：上行  1：下行）
-          vehicleType: "城市公交",//车辆类型
-          drivingKm: 55555,//行驶公里
-          faultid: 1,//事故信息
-          maintenanceid: "已检验",//验车信息
-          manufactureDate: "2018-10-26",//出厂日期
+          busLicense: "冀R88888",//车牌号
+          line: 1,//路线id
+          //operationState: -1,//运营状态（0：运营中  -1：非运营）
+          remarks: "中交天枢",//所属公司
+          //stationStatus: 1,//进出站状态（0：站外 1：站内）
+          //upDownStream: 0,//上下行状态（0：上行  1：下行）
+          //vehicleType: "城市公交",//车辆类型
+          //drivingKm: 55555,//行驶公里
+          //faultid: 1,//事故信息
+          vehicleExamination: "已检验",//验车信息
+          //manufactureDate: "2018-10-26",//出厂日期
 
           registrationNumber: 22222,//车辆登记编号
-          registrationDate: "2018-10-26",//登记日期
+          recordDate: "2018-10-26",//登记日期
           seating: 40,//座位
-          fuelConsumption: "30L",//油耗
-          identificationCode: "44444",//车辆识别码
-          engineNo: 33333,//发动机号
-          factoryBrand: 111111,//厂牌号
-          busLength: 11530.01,//车长
-          busWide: 2500.01,//车身宽
-          busHigh: 3040.01,//车身高
-          airConditioned: 0,//空调车标记（0：默认  1：空调车  2：非空调车）
-          busNote: "测试信息66666",//车辆备注
+          //fuelConsumption: "30L",//油耗
+          vehicleIdentification: "44444",//车辆识别码
+          engineNumber: 33333,//发动机号
+          brandCachet: 111111,//厂牌号
+          //busLength: 11530.01,//车长
+          //busWide: 2500.01,//车身宽
+          //busHigh: 3040.01,//车身高
+          //airConditioned: 0,//空调车标记（0：默认  1：空调车  2：非空调车）
+          //busNote: "测试信息66666",//车辆备注
         }],
         multipleSelection: [],
         total: 5,
@@ -423,30 +442,23 @@
 
         temp: {
           id: undefined,
-          licenseNumber: '',
-          pathId: undefined,
-          operationState: -1,
-          affiliationCompany: '',
-          stationStatus: 1,
-          upDownStream: 0,
-          vehicleType: '',
-          drivingKm: 0,
-          faultid: 1,
-          maintenanceid: '',
-          manufactureDate: '',
+          busLicense: '',
+          line: undefined,
+
+          remarks: '',
+
+          vehicleExamination: '',
+
 
           registrationNumber: undefined,
-          registrationDate: '',
+          recordDate: '',
           seating: 0,
-          fuelConsumption: '',
-          identificationCode: undefined,
-          engineNo: undefined,
-          factoryBrand: undefined,
-          busLength: 0,
-          busWide: 0,
-          busHigh: 0,
-          airConditioned: 0,
-          busNote: ''
+
+          vehicleIdentification: undefined,
+          engineNumber: undefined,
+          brandCachet: undefined,
+
+
         },
         dialogStatus: '',
         dialogFormVisible: false,
@@ -455,7 +467,7 @@
           update: 'Edit',
           create: 'Create'
         },
-        querykey:'employeeId',
+        querykey:'busLicense',
 
       }
     },
@@ -469,30 +481,22 @@
       resetTemp() {
         this.temp = {
           id: undefined,
-          licenseNumber: '',
-          pathId: undefined,
-          operationState: -1,
-          affiliationCompany: '',
-          stationStatus: 1,
-          upDownStream: 0,
-          vehicleType: '',
-          drivingKm: 0,
-          faultid: 1,
-          maintenanceid: '',
-          manufactureDate: '',
+          busLicense: '',
+          line: undefined,
+
+          remarks: '',
+
+          vehicleExamination: '',
+
 
           registrationNumber: undefined,
-          registrationDate: '',
+          recordDate: '',
           seating: 0,
-          fuelConsumption: '',
-          identificationCode: undefined,
-          engineNo: undefined,
-          factoryBrand: undefined,
-          busLength: 0,
-          busWide: 0,
-          busHigh: 0,
-          airConditioned: 0,
-          busNote: ''
+
+          vehicleIdentification: undefined,
+          engineNumber: undefined,
+          brandCachet: undefined,
+
         }
       },
 

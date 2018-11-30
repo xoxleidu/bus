@@ -1,16 +1,6 @@
 <template>
 <el-container>
-  <!--<el-header>-->
-    <!--<el-row>-->
-      <!--<el-col :span="2" class="line">按路线查询公交</el-col>-->
-      <!--<el-col :span="2">-->
-        <!--<el-input v-model="busLineName" placeholder="请输入内容" @keyup.enter.native="busLineSearch"></el-input>-->
-      <!--</el-col>-->
-      <!--<el-col :span="2">-->
-        <!--<el-button type="primary" @click="busLineSearch">主要按钮</el-button>-->
-      <!--</el-col>-->
-    <!--</el-row>-->
-  <!--</el-header>-->
+
   <el-container>
     <el-aside width="200px" style="background-color:#1f2d3d;position: absolute;height: 800px;">
 
@@ -53,6 +43,16 @@
     </el-aside>
     <el-main style="padding-left: 200px">
 
+      <!--<div class="container">-->
+
+        <!--<ul class="time-horizontal" >-->
+          <!--<li v-for="car,index in treebuslist.upSiteList"   :id="'id'+car.id" :key="index"><b></b>{{car.siteName}}</li>-->
+
+        <!--</ul>-->
+      <!--</div>-->
+
+
+
       <el-row :gutter="20">
         <el-col :span="12">
 
@@ -63,11 +63,14 @@
               <!--<el-col :span="2"><el-button type="success">刷新</el-button></el-col>-->
             </el-row>
 
-            <div v-for="car,index in treebuslist.upSiteList"   :id="'id'+car.id" :key="index">
-              <div class='weui-cell-list'>
+            <!--<div class='weui-cell-list-heng' v-for="car,index in treebuslist.upSiteList"   :id="'id'+car.id" :key="index">-->
+            <div class='weui-cell-list' v-for="car,index in treebuslist.upSiteList"   :id="'id'+car.id" :key="index">
+
                 <div class='weui-cell-circle'></div>
+                <!--<div class='weui-cell-line-heng' style="width: 100%;">-->
                 <div class='weui-cell-line' style="width: 100%;">
 
+                  <!--<div class="weui-cell-name-heng">{{car.siteName}}</div>-->
                   <div class="weui-cell-name">{{car.siteName}}</div>
 
 
@@ -80,13 +83,13 @@
                         <div class='weui-cell-event'><img src='/static/buscome.png' class='buscomegoimg' /></div>
                       </div>
                       <div v-if="gps.stationState == 0">
-                        <div class='weui-cell-event-on'><img src='/static/busgo.png' class='buscomegoimg' /> 大约分钟到站 </div>
+                        <div class='weui-cell-event-on'><img src='/static/busgo.png' class='buscomegoimg' /></div>
                       </div>
 
                     </div>
                   </div>
                 </div>
-              </div>
+
             </div>
 
           </el-row>
@@ -114,7 +117,7 @@
 
                     <div v-for="gps,index in car.busList" :key="index">
                       <div v-if="gps.stationState = 0">
-                        <div class='weui-cell-event'><img src='/static/buscome.png' class='buscomegoimg' /></div>
+                        <div class='weui-cell-event-heng'><img src='/static/buscome.png' class='buscomegoimg' /></div>
                       </div>
                       <div v-if="gps.stationState = 1">
                         <div class='weui-cell-event-on'><img src='/static/busgo.png' class='buscomegoimg' /> 大约分钟到站 </div>
@@ -233,7 +236,6 @@
         getBusGPS(line.runMethod).then(response => {
           console.log(response.result)
           if (response.code === '000') {
-
             this.$set(this.$data,"treebuslist",response.result);
             //this.treebuslist=response.result;
             this.initReq(line)
@@ -350,17 +352,36 @@
   }
   .weui-cell-list{
     width: 80%;
+
     position: relative;
 
     margin: 0px 50px 0px 150px;
     float: left;
   }
-  .weui-cell-line{
+  .weui-cell-list-heng{
+    /*width: 80%;*/
+    width: 10%;
+    position: relative;
 
+    /*margin: 0px 50px 0px 150px;*/
+    float: left;
+  }
+  .weui-cell-line{
+    /*float: left;*/
     position: relative;
     margin-left: 5px;
     border-left: 1px solid #bbb;
     height: 40px;
+    /*width: 60px;*/
+
+  }
+  .weui-cell-line-heng{
+    /*float: left;*/
+    position: relative;
+    margin: -5px 8px 0px 8px;
+    border-top: 1px solid #bbb;
+    height: 280px;
+    width: 60px;
 
   }
   .weui-cell-circle{
@@ -376,6 +397,14 @@
     top: -15px;
     left: 15px;
   }
+  .weui-cell-name-heng{
+    position: absolute;
+    font-size:14px;
+    top: 10px;
+    left: -12px;
+    width: 20px;
+
+  }
   .weui-cell-event{
     position: absolute;
     top: -20px;
@@ -383,17 +412,59 @@
     font-size: 16px;
 
   }
+  .weui-cell-event-heng{
+    position: absolute;
+    top: -45px;
+    left: -15px;
+    font-size: 16px;
+
+  }
   .weui-cell-event-on{
     position: absolute;
     top: 5px;
-    left: -115px;
+    /*left: -115px;*/ /*有字*/
+    left: -55px;
     font-size: 12px;
+  }
+  .weui-cell-event-on-heng{
+    position: absolute;
+    top: -45px;
+    left: -55px;
+    font-size: 12px;
+
   }
   .buscomegoimg{
     width: 30px;
     height: 25px;
     border: none;
     vertical-align: middle;
+  }
+
+  /*横向*/
+  .time-horizontal {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+  }
+
+  .time-horizontal li {
+    float: left;
+    position: relative;
+    text-align: center;
+    border-top: 1px solid #707070;
+    padding-top: 10px;
+    width: 20px;
+  }
+  .time-horizontal li b:before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 47%;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #4c4c4c;
+    border-radius: 8px;
+    background: #4c4c4c;
   }
 
 </style>

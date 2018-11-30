@@ -19,16 +19,18 @@ export function postList(currentPage,pageSize,queryk,queryv) {
     data = {
       currentPage:currentPage,
       pageSize:pageSize,
-      employeeId:queryv
+      busLicense:queryv
     }
 
-  } else if (queryk == 1) {
-    data = {
-      currentPage:currentPage,
-      pageSize:pageSize,
-      idcard:queryv
-    }
-  } else {
+  }
+  // else if (queryk == 1) {
+  //   data = {
+  //     currentPage:currentPage,
+  //     pageSize:pageSize,
+  //     idcard:queryv
+  //   }
+  // }
+  else {
     data = {
       currentPage:currentPage,
       pageSize:pageSize

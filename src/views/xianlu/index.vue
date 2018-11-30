@@ -19,7 +19,7 @@
     </div>
     <div class="XL-resize" draggable="true"></div>
     <div class="XL-map">
-      <div id="allmap" style="height:90%;"></div>
+      <div id="allmap" style="height:100%;"></div>
     </div>
 
   </div>
@@ -348,14 +348,14 @@
         if(window.BMapLib&&BMapLib.LuShu){
           _init();
         }else{
-          $.getScript("static/LuShu.js",_init)
+          $.getScript("/static/LuShu.js",_init)
         }
       }
 
       if(!window.BMap){
         var script = document.createElement("script");
         script.type = "text/javascript";
-        script.src = "http://api.map.baidu.com/api?v=2.0&ak=GQwMBW7GulaMd4k3nHoL5M7xZNqF8Y3B&callback=mapInit";
+        script.src = "http://api.map.baidu.com/api?v=2.0&ak=C7kiRgh3qZDHrCbpf9vVGjrN3O9Rf10Q&callback=mapInit";
         document.body.appendChild(script);
       }else{
         mapInit();

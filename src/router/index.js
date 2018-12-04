@@ -39,11 +39,11 @@ export const constantRouterMap = [
     }]
   },
   {
-    path: '/jiankongline',
+    path: '/mapline',
     component: Layout,
     children: [
       {
-        path: 'jiankongline',
+        path: 'mapline',
         name: '线路监控',
         component: () => import('@/views/mapline/index'),
         meta: { title: '线路监控', icon: 'linejk' }

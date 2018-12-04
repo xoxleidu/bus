@@ -75,7 +75,7 @@ export function getBusLineList() {
 
 export function getBusList(data) {
   return request({
-    url: 'http://192.168.88.40:8080/buscenter/busInfo/findOnlineBusListInLine',
+    url: '/busInfo/findOnlineBusListInLine',
     method: 'post',
     data:{
       runMethod:data
@@ -85,7 +85,7 @@ export function getBusList(data) {
 
 export function getBusGPS(data) {
   return request({
-    url: 'http://192.168.88.40:8080/buscenter/line/findLinedetailInfo',
+    url: '/line/findLinedetailInfo',
     method: 'post',
     data:{
       runMethod:data
@@ -95,7 +95,7 @@ export function getBusGPS(data) {
 
 export function getBusYujing() {
   return request({
-    url: 'http://192.168.88.40:8080/buscenter/busInfo/busYujing',
+    url: '/busInfo/busYujing',
     method: 'post'
   })
 }
@@ -103,7 +103,7 @@ export function getBusYujing() {
 
 export function getBusGuiji(data) {
   return request({
-    url: 'http://192.168.88.27:8080/buscenter/busInfo/findBusTrack',
+    url: '/busInfo/findBusTrack',
     method: 'post',
     data
   })
@@ -112,7 +112,7 @@ export function getBusGuiji(data) {
 
 export function getBusGuijiEdit(data) {
   return request({
-    url: 'http://192.168.88.27:8080/buscenter/line/findGpsBus',
+    url: '/line/findGpsBus',
     method: 'post',
     data
   })
@@ -121,7 +121,7 @@ export function getBusGuijiEdit(data) {
 
 export function getBusGuijiEditline(data) {
   return request({
-    url: 'http://192.168.88.27:8080/buscenter/line/findLineHistoryLocus',
+    url: '/line/findLineHistoryLocus',
     method: 'post',
     data
   })
@@ -129,7 +129,7 @@ export function getBusGuijiEditline(data) {
 
 export function updataBusGuijiEditline(data) {
   return request({
-    url: 'http://192.168.88.27:8080/buscenter/line/insertBus',
+    url: '/line/insertBus',
     method: 'post',
     data
   })

@@ -17,6 +17,16 @@
         <el-checkbox-button v-for="lineGroup,key in lineGroups" :label="key" :key="lineGroup.name">{{lineGroup.name}}</el-checkbox-button>
       </el-checkbox-group>
     </div>
+      <div class="XL-infow">
+        <div id="mainww" class="winfo-l" style="width: 300px;height: 200px;"></div>
+        <div class="winfo-r" v-for="infoGroups,key in infoGroups" :label="key" :key="infoGroups.lineNum">
+          <div class="winfo-title">此区域覆盖线路<span> {{infoGroups.lineNum}} </span>条</div>
+          <div class="winfo-nr">{{infoGroups.lineList}}</div>
+          <div class="winfo-title">此区域覆盖站点<span> {{infoGroups.siteNum}} </span>个</div>
+          <div class="winfo-nr">{{infoGroups.siteList}}</div>
+        </div>
+      </div>
+
     <div class="XL-resize" draggable="true"></div>
     <div class="XL-map">
       <div id="allmap" style="height:100%;"></div>
@@ -25,9 +35,10 @@
   </div>
 </template>
 <script>
-  import {getStreetPoints} from "@/API/"
+  import {getStreetPoints,getTJSJlist} from "@/API/"
   import { Loading } from 'element-ui';
   import $ from 'jQuery';
+  import echarts from 'echarts';
   export default {
     data() {
       return {
@@ -50,11 +61,25 @@
             name:"辐射线",
             line:[]
           },
-          quyu:{
-            name:"区域",
+          topLeft:{
+            name:"区域左上",
+            line:[]
+          },
+          topRight:{
+            name:"区域右上",
+            line:[]
+          },
+          bottomLeft:{
+            name:"区域左下",
+            line:[]
+          },
+          bottomRight:{
+            name:"区域右下",
             line:[]
           }
         },
+
+        infoGroups:{},
         lineGroupsChecked:[],
         stationList: [
           // {
@@ -219,11 +244,17 @@
           label: 'name',
           children: 'children'
         },
-        map:{}
+        map:{},
+        myChart:null
       }
 
     },
     watch:{
+
+
+
+
+
       showAllLine(){
         // var this.stationList.map()
         if(this.showAllLine){
@@ -242,29 +273,38 @@
         }
 
       },
+
+
       lineGroupsChecked(){
         for(var key in this.lineGroups){
           this.lineGroups[key].line.map(line=>{
             this.map.removeOverlay(line);
+
           })
 
         }
         this.lineGroupsChecked.map((key)=>{
           this.lineGroups[key].line.map(line=>{
             this.map.addOverlay(line);
+
             // var _path = $(line.V); //获取到当前svg中对应得path
           })
         });
         clearInterval(this.lineGroupsTimer);
         var opacity = 100;
         var step = 2;
+        $(".XL-infow").css({'display':'none'});
+        $(".winfo-l").css({'display':'none'});
+        console.log('关')
         this.lineGroupsTimer = setInterval(()=>{
+
           if(opacity<=30){step = 2;}
           if(opacity>=100){step = -2;}
           opacity+=step;
           this.lineGroupsChecked.map((key)=>{
             this.lineGroups[key].line.map(line=>{
               line.setStrokeOpacity(opacity/100);
+
             })
           })
 
@@ -272,6 +312,12 @@
       }
     },
     mounted() {
+
+
+      this.myChart = echarts.init(document.getElementById('mainww'));
+
+
+
 
       $(".XL-resize").on("drag",function(e){
         if(e.pageX!=0&&e.pageX>200){
@@ -323,23 +369,66 @@
             var _arr =  getStreetPoints(name).points.map(item=>{
               return new BMap.Point(item.lng,item.lat);
             })
-            var polyline = new BMap.Polyline(_arr, {strokeColor:"#ff3c00", strokeWeight:7, strokeOpacity:1});   //辐射
-            that.lineGroups.fushe.line.push(polyline)
+            var polylineFushe = new BMap.Polyline(_arr, {strokeColor:"#ff3c00", strokeWeight:7, strokeOpacity:1});   //辐射
+            that.lineGroups.fushe.line.push(polylineFushe)
+            polylineFushe.addEventListener('click',getAttrFushe)
+            function getAttrFushe(){
+              console.log(polylineFushe.pI.lat)
+              //that.showMapWindews()
+              // var p = marker.getPosition();       //获取marker的位置
+              // alert("marker的位置是" + p.lng + "," + p.lat);
+              //alert()
+            }
           });
 
-          ["区域左上","区域右上","区域左下","区域右下"].map(name=>{
+          ["区域左上"].map(name=>{
             var _arr =  getStreetPoints(name).points.map(item=>{
               return new BMap.Point(item.lng,item.lat);
             })
-            var Polygon = new BMap.Polygon(_arr, {strokeColor:"#10786f",fillColor:"#0ab0a2", strokeWeight:3, strokeOpacity:1});   //区域
-            that.lineGroups.quyu.line.push(Polygon)
-            Polygon.addEventListener('click',getAttr)
-            function getAttr(){
-              // var p = marker.getPosition();       //获取marker的位置
-              // alert("marker的位置是" + p.lng + "," + p.lat);
-              //alert(1111)
+            var PolygonQuyu = new BMap.Polygon(_arr, {strokeColor:"#91c7ae",fillColor:"#749f83", strokeWeight:3, strokeOpacity:1});   //区域
+            that.lineGroups.topLeft.line.push(PolygonQuyu)
+            PolygonQuyu.addEventListener('click',getAttrQuyu)
+            function getAttrQuyu(){
+              that.showMapWindews("区域左上")
             }
           });
+          ["区域右上"].map(name=>{
+            var _arr =  getStreetPoints(name).points.map(item=>{
+              return new BMap.Point(item.lng,item.lat);
+            })
+            var PolygonQuyu = new BMap.Polygon(_arr, {strokeColor:"#91c7ae",fillColor:"#61a0a8", strokeWeight:3, strokeOpacity:1});   //区域
+            that.lineGroups.topRight.line.push(PolygonQuyu)
+            PolygonQuyu.addEventListener('click',getAttrQuyu)
+            function getAttrQuyu(){
+              that.showMapWindews("区域右上")
+            }
+          });
+          ["区域左下"].map(name=>{
+            var _arr =  getStreetPoints(name).points.map(item=>{
+              return new BMap.Point(item.lng,item.lat);
+            })
+            var PolygonQuyu = new BMap.Polygon(_arr, {strokeColor:"#91c7ae",fillColor:"#d48265", strokeWeight:3, strokeOpacity:1});   //区域
+            that.lineGroups.bottomLeft.line.push(PolygonQuyu)
+            PolygonQuyu.addEventListener('click',getAttrQuyu)
+            function getAttrQuyu(){
+              that.showMapWindews("区域左下")
+            }
+          });
+          ["区域右下"].map(name=>{
+            var _arr =  getStreetPoints(name).points.map(item=>{
+              return new BMap.Point(item.lng,item.lat);
+            })
+            var PolygonQuyu = new BMap.Polygon(_arr, {strokeColor:"#91c7ae",fillColor:"#bda29a", strokeWeight:3, strokeOpacity:1});   //区域
+            that.lineGroups.bottomRight.line.push(PolygonQuyu)
+            PolygonQuyu.addEventListener('click',getAttrQuyu)
+            function getAttrQuyu(){
+              that.showMapWindews("区域右下")
+            }
+          });
+
+
+
+
 
 
 
@@ -364,6 +453,101 @@
 
     },
     methods: {
+
+      //抓站点
+      // $.ajax({
+      //   url:"http://api.map.baidu.com/place/v2/search",
+      //   jsonp: "callback",
+      //   dataType:"jsonp",
+      //   data:{
+      //     query:'公交站',
+      //     bounds:'39.523227,116.67227,39.555029,116.702489',
+      //     output:'json',
+      //     page_size:20,
+      //     page_num:0,
+      //     ak:"C7kiRgh3qZDHrCbpf9vVGjrN3O9Rf10Q"
+      //   },
+      //   success:function(data){
+      //     var res = data.results
+      //     console.log(data)
+      //
+      //     var zdList = [];
+      //
+      //     res.map((position)=>{
+      //       zdList.push(position.name);
+      //     })
+      //
+      //
+      //     console.log(zdList)
+      //   }
+      // });
+
+
+      //统计信息窗口
+      showMapWindews(quyu){
+        var that = this;
+        if(!quyu){
+          return false;
+        }
+
+        $(".XL-infow").css({'display':'block'});
+        $(".winfo-l").css({'display':'block'});
+
+        [quyu].map(name=>{
+          var _arr =  getTJSJlist(name).datas.map(item=>{
+            return item;
+          })
+          this.$set(this.$data,"infoGroups",_arr);
+        });
+
+
+        // 绘制图表
+
+        that.myChart.setOption({
+
+          tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+          },
+
+          series : [
+            {
+              name: '区域覆盖统计',
+              type: 'pie',
+              radius : '95%',
+              center: ['50%', '50%'],
+              label: {
+                normal: {
+                  position: 'inner',
+                  fontSize: 12,
+                }
+              },
+
+              data:[
+                {value:that.infoGroups[0].lineNum, name:'线路'},
+                {value:that.infoGroups[0].siteNum, name:'站点'}
+              ],
+              color:[
+                '#409eff','#5dc8bd',
+              ],
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            }
+          ]
+        });
+
+
+
+
+
+      },
+
+
 
       playBus(node,data){ //播放/暂停 线路
         var that = this;
@@ -648,10 +832,22 @@
 
   .XL-group{position:absolute; right:0; top:60px; z-index: 22; background:rgba(0,0,0,0.5); color: #FFF;}
 
+  .XL-infow {position:absolute; width: 88%; right:0; bottom:20px; z-index: 22; background:rgba(0,0,0,0.7); color: #FFF; padding: 20px;display: none;}
+  .winfo-l {float: left; width: 20%; display: none;}
+  .winfo-r {float: right; padding-right: 20px; width: 80%;color: #dedede;
+    div{padding: 5px;}
+    .winfo-title{font-weight: bold;color: #FFF;
+      span{ color: #00fff0;}
+    }
+    .winfo-nr{padding-left: 20px; line-height: 24px;}
+  }
+
   .line-show-all{ display: block;
     span{ display: block;border: none;border-radius: 0 !important;background:rgba(0,0,0,0.5);color: #FFF;}
   }
+  .el-checkbox-group {width: 400px; text-align: center;}
   .line-group{
+    .el-checkbox-button{width: 98px;margin: 5px 0px;}
     .el-checkbox-button__inner{border-radius: 0 !important;background:rgba(0,0,0,0.5);color: #FFF;}
   }
   .psbusbutton{

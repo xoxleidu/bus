@@ -101,7 +101,7 @@
             <dd>
                 <span v-for="djj in YujingData.dajianju">
                  <!--<router-link :to="'/jiankong-line/'+djj.lineId.replace('路',1)">{{djj.vehicleNumber}}</router-link>-->
-                  <router-link :to="'/mapline/'+djj.dajianju">{{djj}}</router-link>
+                  <router-link :to="'/mapline/mapline?sendLineName='+djj.runMethod">{{djj.vehicleNumber}}</router-link>
                 </span>
 
             </dd>
@@ -112,7 +112,7 @@
             <dt>双车</dt>
             <dd>
                 <span v-for="sc in YujingData.shuangche">
-                  <router-link :to="'/mapline/'+sc.shuangche">{{sc}}</router-link>
+                  <router-link :to="'/mapline/mapline?sendLineName='+sc.runMethod">{{sc.vehicleNumber}}</router-link>
                 </span>
             </dd>
 
@@ -124,8 +124,8 @@
             <dt>滞站</dt>
             <dd style="height:45px;overflow-y:auto;">
                 <span v-for="item in YujingData.zhizhan">
-                  <router-link :to="'/jiankong-line/'+item.zhizhan">
-                    {{item}}
+                  <router-link :to="'/mapline?sendLineName='+item.runMethod">
+                    {{item.vehicleNumber}}
                   <!--{{item.lineId}}-->
                   <!--{{item.stationId}}-->
                   <!--{{item.vehicleNumber}}-->
@@ -249,37 +249,41 @@
           getBusYujing().then(Response => {
             if(Response.code === '000') {
 
-              var dajianju = {};
-              var shuangche = {};
-              var zhizhan = {};
-              Response.result.dajianju.map(item=>{
-                dajianju[item.lineId] = "";
-              });
-              Response.result.shuangche.map(item=>{
-                shuangche[item.lineId] = "";
-              });
-              Response.result.zhizhan.map(item=>{
-                zhizhan[item.lineId] = "";
-              });
-              var dajianjuArr = [];
-              var shuangcheArr = [];
-              var zhizhanArr = [];
-              for(var key1 in dajianju){
-                //dajianjuArr.push({'dajianju':key1});
-                dajianjuArr.push(key1);
-              }
-              for(var key2 in shuangche){
-                shuangcheArr.push(key2);
-              }
-              for(var key3 in zhizhan){
-                zhizhanArr.push(key3);
-              }
-              //console.log(dajianjuArr);
+              // var dajianju = {};
+              // var shuangche = {};
+              // var zhizhan = {};
+              // Response.result.dajianju.map(item=>{
+              //   dajianju[item.runMethod] = "";
+              // });
+              // Response.result.shuangche.map(item=>{
+              //   //shuangche[item.lineId] = "";
+              //   shuangche[item.runMethod] = "";
+              // });
+              // Response.result.zhizhan.map(item=>{
+              //   zhizhan[item.runMethod] = "";
+              // });
+              // var dajianjuArr = [];
+              // var shuangcheArr = [];
+              // var zhizhanArr = [];
+              // for(var key1 in dajianju){
+              //   //dajianjuArr.push({'dajianju':key1});
+              //   dajianjuArr.push(key1);
+              // }
+              // for(var key2 in shuangche){
+              //   shuangcheArr.push(key2);
+              // }
+              // for(var key3 in zhizhan){
+              //   zhizhanArr.push(key3);
+              // }
+              // //console.log(dajianjuArr);
+              //
+              // this.$set(this.$data.YujingData,"dajianju",dajianjuArr);
+              // this.$set(this.$data.YujingData,"shuangche",shuangcheArr);
+              // this.$set(this.$data.YujingData,"zhizhan",zhizhanArr);
 
-              this.$set(this.$data.YujingData,"dajianju",dajianjuArr);
-              this.$set(this.$data.YujingData,"shuangche",shuangcheArr);
-              this.$set(this.$data.YujingData,"zhizhan",zhizhanArr);
-
+              this.$set(this.$data.YujingData,"dajianju",Response.result.dajianju);
+              this.$set(this.$data.YujingData,"shuangche",Response.result.shuangche);
+              this.$set(this.$data.YujingData,"zhizhan",Response.result.zhizhan);
             }
           }) ;
 
@@ -342,12 +346,12 @@
 
       },
       //点击线路多选框
-      treeLineCheck(e,data){
+      treeLineCheck(e,line){
         var that = this;
         var isChecked = $(e.target).prop("checked");
 
         if(isChecked){
-          that.$set(data,"show",$(e.target).prop("checked"));
+          that.$set(line,"show",$(e.target).prop("checked"));
         }
 
         that.$nextTick(function () {
@@ -359,14 +363,14 @@
               }
             });
 
-            that.createBusLine(data);
+            that.createBusLine(line);
           }else{
             $checkboxs.each(function(index,el){
               if($(el).prop("checked")){
                 $(el).trigger("click");
               }
             });
-            that.removeBusLine(data);
+            that.removeBusLine(line);
           }
         })
       },
@@ -424,9 +428,9 @@
         }
       },
       //移除车辆
-      removeCar(data){
-        this.map.removeOverlay(data.marker);
-        delete data.marker
+      removeCar(line){
+        this.map.removeOverlay(line.marker);
+        delete line.marker
       },
       //创建车辆
       createCar(data){
@@ -478,6 +482,8 @@
         return new Promise(function(resolve,reject){
           var busLineSearch  = new BMap.BusLineSearch("廊坊市",{
             onGetBusLineComplete:function(busItem){
+              //console.log(busItem)
+              //debugger
               if(!line.xianluLine){
                 that.createXianlu(busItem,line);//创建线路｛线、点｝
               }
@@ -600,6 +606,6 @@
     dl,dt,dd{margin:0;padding:0;}
     dl{padding:10px;}
     dd{padding-top:8px;}
-    dd span{ background:#ffcd40; border-radius: 3px; font-size:14px; display: inline-block; padding:1px 3px; margin-right:3px;}
+    dd span{ background:#ff4040; border-radius: 3px; font-size:14px; display: inline-block; padding:1px 5px; margin-right:3px;}
   }
 </style>

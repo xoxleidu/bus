@@ -84,7 +84,7 @@ service.interceptors.response.use(
   error => {
     console.log('err' + error) // for debug
     Message({
-      message: error.message + '服务器断开',
+      message: error.message + ' 服务器断开链接',
       type: 'error',
       duration: 5 * 1000
     })

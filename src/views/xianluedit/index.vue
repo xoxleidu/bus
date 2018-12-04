@@ -444,6 +444,11 @@
 
       },
 
+
+      getLinesHandler(){
+
+      },
+
       searchHandlerUpdate(){
 
         console.log(this.updataNewLine)
@@ -625,7 +630,7 @@
   .GJ-table{
     td{height:25px; color:#777;}
   }
-  .GJ-player{margin:0px 20px;padding: 5px 10px;position:absolute; top:80px;height:50px;left:0;right:0; z-index: 99; background: rgba(255,255,255,.9); border:1px solid #ddd;}
+  .GJ-player{margin:0px 20px;padding: 5px 10px;position:absolute; top:100px;height:50px;left:0;right:0; z-index: 99; background: rgba(255,255,255,.9); border:1px solid #ddd;}
   .GJ-map{ position: absolute; top:57px; bottom:0; width: 100%;}
 
   .GJ-body{

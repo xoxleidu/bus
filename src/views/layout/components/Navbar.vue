@@ -44,9 +44,12 @@ export default {
       this.$store.dispatch('ToggleSideBar')
     },
     logout() {
+      //alert(121)
       this.$store.dispatch('LogOut').then(() => {
         location.reload() // 为了重新实例化vue-router对象 避免bug
+
       })
+      //next(`/login?redirect=login`) // 否则全部重定向到登录页
     }
   }
 }

@@ -142,7 +142,7 @@
 
     </el-main>
   </el-container>
-  <!--<el-footer>Footer</el-footer>-->
+  <div class="me-footer"></div>
 </el-container>
 
 </template>
@@ -181,13 +181,33 @@
         },
         GPSlist:'',
         treeCount: 1,
-        timer:null
+        timer:null,
+        sendLineName:[]
       }
     },
     beforeDestroy(){
       clearInterval(this.timer);
     },
     mounted(){
+
+      //alert(this.$route.query.sendLineName)
+
+      //this.sendLineName = this.$route.query.sendLineName
+      if(this.$route.query.sendLineName){
+
+        this.$set(this.$data.sendLineName,"runMethod",this.$route.query.sendLineName);
+
+        if(this.sendLineName.runMethod){
+          this.oneInitReq(this.sendLineName)
+        }
+
+
+      }
+
+
+
+      //alert(this.sendLineName)
+
       //console.log(1231);
       //this.loadmap();     //加载地图和相关组件
 
@@ -247,8 +267,10 @@
       treeToggle(e,line){
          console.log(e)
 
+        this.$set(this.$data.sendLineName,"runMethod",null);
+          this.oneInitReq(line)
 
-        this.oneInitReq(line)
+
 
         $(e.target).closest(".tree-node").toggleClass("active");
         var reslult = $(e.target).closest(".tree-node").hasClass("active");
@@ -292,7 +314,7 @@
     background-color: #E9EEF3;
     color: #333;
     text-align: center;
-    max-height: 800px;
+    height: 800px;
   }
   .grid-content {
     border-radius: 4px;
@@ -319,6 +341,7 @@
     text-align: center;
     line-height: 200px;
   }
+
   .line-list{
 
     text-align: left;
@@ -465,6 +488,9 @@
     border: 2px solid #4c4c4c;
     border-radius: 8px;
     background: #4c4c4c;
+  }
+  .me-footer {
+    border-top:#e6e6e6 1px solid;
   }
 
 </style>
